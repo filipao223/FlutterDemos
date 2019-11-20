@@ -43,15 +43,6 @@ class CryptoListState extends State<CryptoList> {
 
 
 
-  void _getFavorites(){
-    Navigator.of(context).push(
-        MaterialPageRoute<void>(
-
-        )
-    );
-  }
-
-
 
 
   @override
@@ -72,7 +63,7 @@ class CryptoListState extends State<CryptoList> {
           appBar: AppBar(
             title: Text("CryptoTrack"),
             actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.format_list_bulleted), onPressed: () => Navigator.pushNamed(context, favoritesRoute))
+              new IconButton(icon: new Icon(Icons.format_list_bulleted), onPressed: () => Navigator.pushNamed(context, favoritesRoute, arguments: _favorites))
             ],
           ),
           body: _buildList()

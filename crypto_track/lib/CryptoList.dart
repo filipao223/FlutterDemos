@@ -1,13 +1,22 @@
-import 'package:crypto_track/constants.dart';
+
+import 'package:crypto_track/DBHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'dart:convert';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
 
 class CryptoListState extends State<CryptoList> {
   String _apiKey = "null";
   List<Coin> _coinList = List<Coin>();
-  List<Coin> _favorites = List<Coin>();
+  List<Coin> _favorites;
+  DBHandler dbHandler;
+
+  void _initDBHandler(){
+    this.dbHandler = new DBHandler();
+    dbHandler.init();
+  }
 
   void _getCryptoNames() async {
     /*Get the api key from the file*/
@@ -30,7 +39,7 @@ class CryptoListState extends State<CryptoList> {
             /*Response JSON contains many 'null' values, ensure these don't get added to the list*/
             if (!data['name'].toString().contains("null") && (double.tryParse(data['price_usd'].toString()) != null)) {
               print(data["name"]);
-              _coinList.add(new Coin(data['name'], data['asset_id'], double.parse(data['price_usd'].toString()), double.parse(data['volume_1mth_usd'].toString())));
+              _coinList.add(new Coin(name: data['name'], id: data['asset_id'], price: double.parse(data['price_usd'].toString()), volumeMonth: double.parse(data['volume_1mth_usd'].toString())));
             }
           }
       );
@@ -59,12 +68,11 @@ class CryptoListState extends State<CryptoList> {
       );
     }
     else{
+      _favorites = ModalRoute.of(context).settings.arguments;
+
       return new Scaffold(
           appBar: AppBar(
             title: Text("CryptoTrack"),
-            actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.format_list_bulleted), onPressed: () => Navigator.pushNamed(context, favoritesRoute, arguments: _favorites))
-            ],
           ),
           body: _buildList()
 
@@ -88,17 +96,34 @@ class CryptoListState extends State<CryptoList> {
 
 
   Widget _buildRow(Coin coin){
-    final _isSaved = _favorites.contains(coin);
+
+    /*Check if user has already saved this coin*/
+    var _isSaved = _favorites.firstWhere((coinInList) =>
+       coinInList.id == coin.id, orElse: () => null
+    );
+
     return new ListTile(
       title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
       trailing: Icon(
-        _isSaved ? Icons.favorite : Icons.favorite_border,
-        color: _isSaved ? Colors.red : null,
+        _isSaved!=null ? Icons.favorite : Icons.favorite_border,
+        color: _isSaved!=null ? Colors.red : null,
       ),
       onTap: () {
         setState(() {
-          if (_isSaved) _favorites.remove(coin);
-          else _favorites.add(coin);
+          if (_isSaved!=null){
+            _favorites.remove(coin);
+            _isSaved = null;
+
+            //TODO: Database remove
+          }
+          else{
+            _favorites.add(coin);
+            _isSaved = coin;
+
+            //TODO: Database add
+            print("CALLED ADDCOIN TO DATABASE");
+            print(dbHandler.addCoin(coin));
+          }
         });
       },
     );
@@ -110,6 +135,7 @@ class CryptoList extends StatefulWidget{
   @override
   CryptoListState createState(){
     CryptoListState cryptoListState = new CryptoListState();
+    cryptoListState._initDBHandler();
     cryptoListState._getCryptoNames();
     return cryptoListState;
   }
@@ -120,7 +146,16 @@ class Coin{
   final String name;
   final String id;
   final double price;
-  final double volume_month;
+  final double volumeMonth;
 
-  Coin(this.name, this.id, this.price, this.volume_month);
+  Coin({this.name, this.id, this.price, this.volumeMonth});
+
+  Map<String, dynamic> toMap(){
+    return {
+      "id" : id,
+      "price" : price,
+      "volume_month" : volumeMonth,
+      "name" : name
+    };
+  }
 }

@@ -13,8 +13,8 @@ void main(){
       //onGenerateRoute: Router.generateRoute,
       initialRoute: homeRoute,
       routes: {
-        homeRoute : (context) => CryptoList(),
-        favoritesRoute : (context) => Favorites()
+        homeRoute : (context) => Favorites(),
+        searchRoute : (context) => CryptoList()
       },
     )
   );

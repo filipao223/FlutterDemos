@@ -30,6 +30,10 @@ dependencies:
   #Library to load api key from file
   global_configuration: ^1.2.0
 
+  #Database
+  sqflite:
+  path:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

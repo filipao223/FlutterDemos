@@ -47,11 +47,8 @@ class FavoritesState extends State<Favorites>{
           appBar: AppBar(
             title: Text("Favorites"),
             actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.search), onPressed: () async{
-                final _changed = await Navigator.pushNamed(context, searchRoute, arguments: _favorites);
-
-                if (_changed != null || _changed) setState(() {
-                });
+              new IconButton(icon: new Icon(Icons.search), onPressed: (){
+                Navigator.pushNamed(context, searchRoute, arguments: _favorites);
               })
             ],
           ),
@@ -70,11 +67,8 @@ class FavoritesState extends State<Favorites>{
           appBar: AppBar(
             title: Text("Favorites"),
             actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.search), onPressed: () async{
-                final _changed = await Navigator.pushNamed(context, searchRoute, arguments: _favorites);
-
-                if (_changed != null || _changed) setState(() {
-                });
+              new IconButton(icon: new Icon(Icons.search), onPressed: (){
+                Navigator.pushNamed(context, searchRoute, arguments: _favorites);
               })
             ],
           ),
@@ -96,11 +90,8 @@ class FavoritesState extends State<Favorites>{
           appBar: AppBar(
             title: Text("Favorites"),
             actions: <Widget>[
-              new IconButton(icon: new Icon(Icons.search), onPressed: () async{
-                final _changed = await Navigator.pushNamed(context, searchRoute, arguments: _favorites);
-
-                if (_changed != null || _changed) setState(() {
-                });
+              new IconButton(icon: new Icon(Icons.search), onPressed: (){
+                Navigator.pushNamed(context, searchRoute, arguments: _favorites);
               })
             ],
           ),
@@ -111,11 +102,14 @@ class FavoritesState extends State<Favorites>{
 
 
   Widget _buildList(){
+    /*Debug only*/
+    _favorites.forEach((coin) => print("Coin name : ${coin.name}, price : ${coin.price}"));
+
     return ListView.builder(
         itemCount: _favorites.length,
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i){
-          return _buildRow(_favorites[i]);
+          return _buildRow(context, _favorites[i]);
         }
     );
   }
@@ -123,11 +117,16 @@ class FavoritesState extends State<Favorites>{
 
 
 
-  Widget _buildRow(Coin coin){
+  Widget _buildRow(BuildContext context, Coin coin){
 
     return new ListTile(
       title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
-
+      onTap: () async{
+        final result = await Navigator.pushNamed(context, detailsRoute, arguments: coin);
+        if (result == DELETED_COIN) setState(() {
+          _favorites.remove(coin);
+        });
+      },
     );
   }
 }

@@ -45,4 +45,21 @@ class DBHandler{
     });
   }
 
+
+  Future<int> removeCoin(Coin coin) async{
+    final Database db = await database;
+
+    if (coin == null){
+      print("Error, coin is null");
+      return -1;
+    }
+
+    if (db == null){
+      print("Error, database object is null");
+      return -2;
+    }
+
+    return db.delete(databaseCoinTableName, where: "id = ?", whereArgs: [coin.id]);
+  }
+
 }

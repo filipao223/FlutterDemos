@@ -105,25 +105,14 @@ class CryptoListState extends State<CryptoList> {
     return new ListTile(
       title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
       trailing: Icon(
-        _isSaved!=null ? Icons.favorite : Icons.favorite_border,
-        color: _isSaved!=null ? Colors.red : null,
+        Icons.add
       ),
       onTap: () {
         setState(() {
-          if (_isSaved!=null){
-            _favorites.remove(coin);
-            _isSaved = null;
+          _favorites.add(coin);
 
-            //TODO: Database remove
-          }
-          else{
-            _favorites.add(coin);
-            _isSaved = coin;
-
-            //TODO: Database add
-            print("CALLED ADDCOIN TO DATABASE");
-            print(dbHandler.addCoin(coin));
-          }
+          print("Adding coin to database");
+          print(dbHandler.addCoin(coin));
         });
       },
     );
@@ -132,6 +121,7 @@ class CryptoListState extends State<CryptoList> {
 }
 
 class CryptoList extends StatefulWidget{
+
   @override
   CryptoListState createState(){
     CryptoListState cryptoListState = new CryptoListState();

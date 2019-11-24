@@ -72,15 +72,16 @@ class FavoritesState extends State<Favorites>{
               })
             ],
           ),
-          body: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text('Retrieving from database', textAlign: TextAlign.center),
-              ),
-              Expanded(
-                child: new CircularProgressIndicator(),
-              )
-            ],
+          body: Center(
+            child: Row(
+              children: <Widget>[
+                Text('Retrieving from database', textAlign: TextAlign.center),
+
+                new CircularProgressIndicator(),
+
+              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+            ),
           )
         );
       }

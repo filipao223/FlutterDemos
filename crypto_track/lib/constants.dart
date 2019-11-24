@@ -12,3 +12,5 @@ const String databaseCoinTableProperties = 'rowid INTEGER PRIMARY KEY, id TEXT, 
 
 
 const int DELETED_COIN = 1;
+const int OK = 0;
+const int ERROR = -1;

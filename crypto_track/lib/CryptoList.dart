@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'dart:convert';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
 
 class CryptoListState extends State<CryptoList> {
   String _apiKey = "null";

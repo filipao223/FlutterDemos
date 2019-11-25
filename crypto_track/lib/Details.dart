@@ -118,21 +118,27 @@ class DetailsState extends State<Details>{
                         fontFamily: "Roboto"),
                   ),
 
-                  new Text(
-                    "Price: ${_coin.price.toStringAsFixed(2)}",
-                    style: new TextStyle(fontSize:12.0,
-                        color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w200,
-                        fontFamily: "Roboto"),
+                  new Padding(
+                    child: new Text(
+                      "Price: ${_coin.price.toStringAsFixed(2)}",
+                      style: new TextStyle(fontSize:12.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w200,
+                          fontFamily: "Roboto"),
+                    ),
+                    padding: EdgeInsets.all(2.0),
                   ),
 
-                  new Text(
-                    "Price history over 60 days",
-                    style: new TextStyle(fontSize:10.0,
-                        color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w200,
-                        fontStyle: FontStyle.italic,
-                        fontFamily: "Roboto"),
+                  new Padding(
+                    child: new Text(
+                      "Price history over 60 days",
+                      style: new TextStyle(fontSize:10.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w200,
+                          fontStyle: FontStyle.italic,
+                          fontFamily: "Roboto"),
+                    ),
+                    padding: EdgeInsets.all(4.0)
                   ),
 
                   new Flexible(
@@ -193,12 +199,15 @@ class DetailsState extends State<Details>{
                         fontFamily: "Roboto"),
                   ),
 
-                  new Text(
-                    "Price: ${_coin.price.toStringAsFixed(2)}",
-                    style: new TextStyle(fontSize:12.0,
-                        color: const Color(0xFF000000),
-                        fontWeight: FontWeight.w200,
-                        fontFamily: "Roboto"),
+                  new Padding(
+                    child: new Text(
+                      "Price: ${_coin.price.toStringAsFixed(2)}",
+                      style: new TextStyle(fontSize:12.0,
+                          color: const Color(0xFF000000),
+                          fontWeight: FontWeight.w200,
+                          fontFamily: "Roboto"),
+                    ),
+                    padding: EdgeInsets.all(2.0),
                   ),
 
                   new Flexible(

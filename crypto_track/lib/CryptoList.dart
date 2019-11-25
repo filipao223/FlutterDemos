@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto_track/DBHandler.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,12 +24,16 @@ class CryptoListState extends State<CryptoList> {
     _apiKey = GlobalConfiguration().get("api_key");
 
     /*Make the API request*/
-    String url = 'https://rest.coinapi.io/v1/assets?apikey=$_apiKey';
+    String url = 'https://rest.coinapi.io/v1/assets?apikey=$_apiKey&limit=10';
     Response response = await get(url);
     int statusCode = response.statusCode;
     Map<String, String> headers = response.headers;
     String contentType = headers['content-type'];
     String json = response.body;
+
+    print("REQUESTS LIMIT:");
+    print(response.headers['X-RateLimit-Limit']);
+    debugPrint(response.headers.toString());
 
     /*Convert the response from a json to a list of Coin*/
     var dataMap = jsonDecode(json);
@@ -101,27 +106,91 @@ class CryptoListState extends State<CryptoList> {
        coinInList.id == coin.id, orElse: () => null
     );
 
-    return new ListTile(
-      title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
-      trailing: Icon(
-        Icons.add
+    return new Card(
+      child: new Padding(
+          child: new Row(
+            children: <Widget>[
+              new Container(
+                width: 50.0,
+                height: 50.0,
+
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider('https://homepages.cae.wisc.edu/~ece533/images/airplane.png'),
+                    ),
+
+                    border: new Border.all(
+                      color: Colors.white,
+                      width: 0.5,
+                      style: BorderStyle.solid,
+                    ),
+
+                    boxShadow: [
+                      new BoxShadow(
+                          color: Colors.grey,
+                          spreadRadius: 0.5
+                      )
+                    ]
+                ),
+              ),
+
+              new Flexible(
+                child: new ListTile(
+                  title: Text("${coin.name}"),
+                  subtitle: Text("Price: ${coin.price.toStringAsFixed(2)} USD"),
+                  trailing: Icon(
+                      Icons.add
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _favorites.add(coin);
+
+                      print("Adding coin to database");
+                      print(dbHandler.addCoin(coin));
+
+                      /*Show a toast when saving the coin*/
+                      Fluttertoast.showToast(
+                          msg: "Saved ${coin.name}",
+                          toastLength: Toast.LENGTH_LONG,
+                          timeInSecForIos: 3
+                      );
+                    });
+                  },
+                ),
+              )
+            ],
+            mainAxisAlignment: MainAxisAlignment.start,
+          ),
+          padding: EdgeInsets.only(left: 5.0)
       ),
-      onTap: () {
-        setState(() {
-          _favorites.add(coin);
-
-          print("Adding coin to database");
-          print(dbHandler.addCoin(coin));
-
-          /*Show a toast when saving the coin*/
-          Fluttertoast.showToast(
-            msg: "Saved ${coin.name}",
-            toastLength: Toast.LENGTH_LONG,
-            timeInSecForIos: 3
-          );
-        });
-      },
+      margin: EdgeInsets.all(3.0),
     );
+
+    /*return new Card(
+      child: ListTile(
+        title: Text("${coin.name}"),
+        subtitle: Text("Price: ${coin.price.toStringAsFixed(2)} USD"),
+        trailing: Icon(
+            Icons.add
+        ),
+        onTap: () {
+          setState(() {
+            _favorites.add(coin);
+
+            print("Adding coin to database");
+            print(dbHandler.addCoin(coin));
+
+            /*Show a toast when saving the coin*/
+            Fluttertoast.showToast(
+                msg: "Saved ${coin.name}",
+                toastLength: Toast.LENGTH_LONG,
+                timeInSecForIos: 3
+            );
+          });
+        },
+      ),
+    );*/
   }
 
 }

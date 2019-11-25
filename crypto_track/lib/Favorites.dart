@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto_track/DBHandler.dart';
 import 'package:crypto_track/constants.dart';
 import 'package:flutter/material.dart';
@@ -121,15 +122,55 @@ class FavoritesState extends State<Favorites>{
   Widget _buildRow(BuildContext context, Coin coin){
 
     //TODO: Design small card like layout
+    //TODO: Include last price increase or decrease (if available), being green if it increased and red otherwise
 
-    return new ListTile(
-      title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
-      onTap: () async{
-        final result = await Navigator.pushNamed(context, detailsRoute, arguments: coin);
-        if (result == DELETED_COIN) setState(() {
-          _favorites.remove(coin);
-        });
-      },
+    return new Card(
+      child: new Padding(
+        child: new Row(
+          children: <Widget>[
+            new Container(
+              width: 50.0,
+              height: 50.0,
+
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider('https://homepages.cae.wisc.edu/~ece533/images/airplane.png'),
+                ),
+
+                border: new Border.all(
+                  color: Colors.white,
+                  width: 0.5,
+                  style: BorderStyle.solid,
+                ),
+
+                boxShadow: [
+                  new BoxShadow(
+                      color: Colors.grey,
+                      spreadRadius: 0.5
+                  )
+                ]
+              ),
+            ),
+
+            new Flexible(
+              child: new ListTile(
+                title: Text("${coin.name}"),
+                subtitle: Text("Price: ${coin.price.toStringAsFixed(2)} USD"),
+                onTap: () async{
+                  final result = await Navigator.pushNamed(context, detailsRoute, arguments: coin);
+                  if (result == DELETED_COIN) setState(() {
+                    _favorites.remove(coin);
+                  });
+                },
+              ),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.start,
+        ),
+        padding: EdgeInsets.only(left: 5.0)
+      ),
+      margin: EdgeInsets.all(3.0),
     );
   }
 }

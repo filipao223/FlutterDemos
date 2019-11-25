@@ -23,32 +23,47 @@ class CryptoListState extends State<CryptoList> {
     await GlobalConfiguration().loadFromPath("assets/config.json");
     _apiKey = GlobalConfiguration().get("api_key");
 
-    /*Make the API request*/
-    String url = 'https://rest.coinapi.io/v1/assets?apikey=$_apiKey&limit=10';
+    /*Make the API request for all coin info*/
+    String url = 'https://rest.coinapi.io/v1/assets?apikey=$_apiKey';
     Response response = await get(url);
-    int statusCode = response.statusCode;
-    Map<String, String> headers = response.headers;
-    String contentType = headers['content-type'];
-    String json = response.body;
+    String jsonCoinData = response.body;
+
+    /*Make the API request for all coin pictures*/
+    url = 'https://rest.coinapi.io/v1/assets/icons/small?apikey=$_apiKey';
+    response = await get(url);
+    String jsonCoinPics = response.body;
 
     print("REQUESTS LIMIT:");
     print(response.headers['X-RateLimit-Limit']);
     debugPrint(response.headers.toString());
 
     /*Convert the response from a json to a list of Coin*/
-    var dataMap = jsonDecode(json);
-    setState(() {
-      dataMap.forEach(
-              (data) {
-            /*Response JSON contains many 'null' values, ensure these don't get added to the list*/
-            if (!data['name'].toString().contains("null") && (double.tryParse(data['price_usd'].toString()) != null)) {
-              print(data["name"]);
-              _coinList.add(new Coin(name: data['name'], id: data['asset_id'], price: double.parse(data['price_usd'].toString()), volumeMonth: double.parse(data['volume_1mth_usd'].toString())));
-            }
+    var coinPicsDataMap = jsonDecode(jsonCoinPics);
+    var dataMap = jsonDecode(jsonCoinData);
+    dataMap.forEach(
+            (data) {
+          /*Response JSON contains many 'null' values, ensure these don't get added to the list*/
+          if (!data['name'].toString().contains("null") && (double.tryParse(data['price_usd'].toString()) != null)) {
+            print(data["name"]);
+            _coinList.add(new Coin(name: data['name'], id: data['asset_id'], price: double.parse(data['price_usd'].toString()), volumeMonth: double.parse(data['volume_1mth_usd'].toString())));
           }
-      );
+        }
+    );
 
-      /*Sort the list by currency price in USD*/
+    /*Iterate over picture url map and save them in respective coin*/
+    coinPicsDataMap.forEach(
+            (data) {
+          String coinId = data['asset_id'];
+          String url = data['url'];
+
+          /*Find first coin with the same id (only one should exist)*/
+          Coin foundCoin = _coinList.firstWhere((coin) => coin.id.compareTo(coinId) == 0, orElse: () => null);
+          if (foundCoin != null) foundCoin.urlPicture = url;
+        }
+    );
+
+    /*Sort the list by currency price in USD*/
+    setState(() {
       _coinList.sort((coin1, coin2) => coin2.price.compareTo(coin1.price));
     });
   }
@@ -91,7 +106,7 @@ class CryptoListState extends State<CryptoList> {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i){
-          return _buildRow(_coinList[i]);
+          return buildCard(_coinList[i]);
         }
     );
   }
@@ -99,7 +114,7 @@ class CryptoListState extends State<CryptoList> {
 
 
 
-  Widget _buildRow(Coin coin){
+  Widget buildCard(Coin coin){
 
     /*Check if user has already saved this coin*/
     var _isSaved = _favorites.firstWhere((coinInList) =>
@@ -117,7 +132,7 @@ class CryptoListState extends State<CryptoList> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider('https://homepages.cae.wisc.edu/~ece533/images/airplane.png'),
+                      image: CachedNetworkImageProvider(coin.urlPicture),
                     ),
 
                     border: new Border.all(
@@ -166,31 +181,6 @@ class CryptoListState extends State<CryptoList> {
       ),
       margin: EdgeInsets.all(3.0),
     );
-
-    /*return new Card(
-      child: ListTile(
-        title: Text("${coin.name}"),
-        subtitle: Text("Price: ${coin.price.toStringAsFixed(2)} USD"),
-        trailing: Icon(
-            Icons.add
-        ),
-        onTap: () {
-          setState(() {
-            _favorites.add(coin);
-
-            print("Adding coin to database");
-            print(dbHandler.addCoin(coin));
-
-            /*Show a toast when saving the coin*/
-            Fluttertoast.showToast(
-                msg: "Saved ${coin.name}",
-                toastLength: Toast.LENGTH_LONG,
-                timeInSecForIos: 3
-            );
-          });
-        },
-      ),
-    );*/
   }
 
 }
@@ -212,15 +202,17 @@ class Coin{
   final String id;
   final double price;
   final double volumeMonth;
+  String urlPicture = "";
 
-  Coin({this.name, this.id, this.price, this.volumeMonth});
+  Coin({this.name, this.id, this.price, this.volumeMonth, this.urlPicture});
 
   Map<String, dynamic> toMap(){
     return {
       "id" : id,
       "price" : price,
       "volume_month" : volumeMonth,
-      "name" : name
+      "name" : name,
+      "url_picture" : urlPicture
     };
   }
 }

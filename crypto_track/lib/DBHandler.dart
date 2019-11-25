@@ -40,7 +40,8 @@ class DBHandler{
         name: maps[i]['name'],
         id: maps[i]['id'],
         price: maps[i]['price'],
-        volumeMonth: maps[i]['volume_month']
+        volumeMonth: maps[i]['volume_month'],
+        urlPicture: maps[i]['url_picture']
       );
     });
   }

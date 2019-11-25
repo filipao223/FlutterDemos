@@ -40,6 +40,8 @@ class FavoritesState extends State<Favorites>{
   @override
   Widget build(BuildContext context) {
 
+    //TODO: Wrap saved coins in a swipe to refresh layout, to update price
+
     if (_favorites.isEmpty){
 
       if (_checkedDatabase){
@@ -120,8 +122,7 @@ class FavoritesState extends State<Favorites>{
 
 
   Widget _buildRow(BuildContext context, Coin coin){
-
-    //TODO: Design small card like layout
+    
     //TODO: Include last price increase or decrease (if available), being green if it increased and red otherwise
 
     return new Card(
@@ -135,7 +136,7 @@ class FavoritesState extends State<Favorites>{
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider('https://homepages.cae.wisc.edu/~ece533/images/airplane.png'),
+                  image: CachedNetworkImageProvider(coin.urlPicture),
                 ),
 
                 border: new Border.all(
@@ -163,6 +164,7 @@ class FavoritesState extends State<Favorites>{
                     _favorites.remove(coin);
                   });
                 },
+                trailing: new Icon(Icons.arrow_forward),
               ),
             )
           ],

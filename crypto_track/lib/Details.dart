@@ -8,6 +8,7 @@ import 'package:crypto_track/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto_track/CryptoList.dart';
 import 'package:flutter_candlesticks/flutter_candlesticks.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart';
 
@@ -27,7 +28,8 @@ class DetailsState extends State<Details>{
   }
 
   void debugPrintCustom(List<dynamic> items){
-    items.forEach((item) => print(item));
+    if (items != null) items.forEach((item) => print(item));
+    else print("Null object");
   }
 
 
@@ -63,6 +65,8 @@ class DetailsState extends State<Details>{
   Widget build(BuildContext context) {
     _coin = ModalRoute.of(context).settings.arguments;
 
+    //TODO: Show specific layout when checking price API, so it doesn't show 'No price history' (checking can take some seconds)
+
     if (_coin == null){
       return Scaffold(
         appBar: AppBar(
@@ -86,6 +90,13 @@ class DetailsState extends State<Details>{
 
                 /*Pop with deleted coin return value*/
                 Navigator.pop(context, DELETED_COIN);
+
+                //TODO: Show toast when deleting coin
+                Fluttertoast.showToast(
+                  msg: "Deleted coin",
+                  toastLength: Toast.LENGTH_LONG,
+                  timeInSecForIos: 3
+                );
               })
             ],
           ),
@@ -155,6 +166,12 @@ class DetailsState extends State<Details>{
 
                 /*Pop with deleted coin return value*/
                 Navigator.pop(context, DELETED_COIN);
+
+                Fluttertoast.showToast(
+                    msg: "Deleted coin",
+                    toastLength: Toast.LENGTH_LONG,
+                    timeInSecForIos: 3
+                );
               })
             ],
           ),

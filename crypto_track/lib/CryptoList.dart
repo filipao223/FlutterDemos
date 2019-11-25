@@ -1,6 +1,7 @@
 
 import 'package:crypto_track/DBHandler.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'dart:convert';
@@ -111,6 +112,13 @@ class CryptoListState extends State<CryptoList> {
 
           print("Adding coin to database");
           print(dbHandler.addCoin(coin));
+
+          /*Show a toast*/
+          Fluttertoast.showToast(
+            msg: "Saved ${coin.name}",
+            toastLength: Toast.LENGTH_LONG,
+            timeInSecForIos: 3
+          );
         });
       },
     );

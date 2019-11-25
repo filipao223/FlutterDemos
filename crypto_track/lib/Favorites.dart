@@ -120,6 +120,8 @@ class FavoritesState extends State<Favorites>{
 
   Widget _buildRow(BuildContext context, Coin coin){
 
+    //TODO: Design small card like layout
+
     return new ListTile(
       title: Text("${coin.name} - Price: ${coin.price.toStringAsFixed(2)} USD"),
       onTap: () async{

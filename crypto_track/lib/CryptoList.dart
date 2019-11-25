@@ -113,7 +113,7 @@ class CryptoListState extends State<CryptoList> {
           print("Adding coin to database");
           print(dbHandler.addCoin(coin));
 
-          /*Show a toast*/
+          /*Show a toast when saving the coin*/
           Fluttertoast.showToast(
             msg: "Saved ${coin.name}",
             toastLength: Toast.LENGTH_LONG,

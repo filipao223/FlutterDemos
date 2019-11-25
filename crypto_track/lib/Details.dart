@@ -18,6 +18,7 @@ class DetailsState extends State<Details>{
   String _apiKey;
   ChartData chartData = new ChartData();
   bool haveChartData = false;
+  bool checkingApi = true;
 
 
   void initDBHandler() {
@@ -52,11 +53,14 @@ class DetailsState extends State<Details>{
     debugPrintCustom(historyArray);
 
     var result = chartData.fillSampleData(historyArray);
-    if (result == OK){
-      setState(() {
+    setState(() {
+      if (result == OK){
         haveChartData = true;
-      });
-    }
+        checkingApi = false;
+      }
+
+      else checkingApi = false;
+    });
   }
 
 
@@ -64,8 +68,6 @@ class DetailsState extends State<Details>{
   @override
   Widget build(BuildContext context) {
     _coin = ModalRoute.of(context).settings.arguments;
-
-    //TODO: Show specific layout when checking price API, so it doesn't show 'No price history' (checking can take some seconds)
 
     if (_coin == null){
       return Scaffold(
@@ -91,7 +93,7 @@ class DetailsState extends State<Details>{
                 /*Pop with deleted coin return value*/
                 Navigator.pop(context, DELETED_COIN);
 
-                //TODO: Show toast when deleting coin
+                /*Show a toast when deleting a coin*/
                 Fluttertoast.showToast(
                   msg: "Deleted coin",
                   toastLength: Toast.LENGTH_LONG,
@@ -202,7 +204,7 @@ class DetailsState extends State<Details>{
                   new Flexible(
                     child: new Center(
                       child: new Text(
-                        "No price history data for this coin.",
+                        checkingApi ? "Checking API for price history" : "No price history data for this coin.",
                         style: new TextStyle(fontSize:12.0,
                             color: const Color(0xFF000000),
                             fontWeight: FontWeight.w200,

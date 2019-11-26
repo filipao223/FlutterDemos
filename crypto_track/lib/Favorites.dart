@@ -135,22 +135,19 @@ class FavoritesState extends State<Favorites>{
 
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(coin.urlPicture),
-                ),
 
                 border: new Border.all(
                   color: Colors.white,
                   width: 0.5,
                   style: BorderStyle.solid,
                 ),
+                
+              ),
 
-                boxShadow: [
-                  new BoxShadow(
-                      color: Colors.grey,
-                      spreadRadius: 0.5
-                  )
-                ]
+              child: CachedNetworkImage(
+                imageUrl: coin.urlPicture==null ? "" : coin.urlPicture,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
             ),
 

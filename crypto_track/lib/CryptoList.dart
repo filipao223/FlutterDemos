@@ -131,9 +131,6 @@ class CryptoListState extends State<CryptoList> {
 
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(coin.urlPicture),
-                    ),
 
                     border: new Border.all(
                       color: Colors.white,
@@ -141,12 +138,12 @@ class CryptoListState extends State<CryptoList> {
                       style: BorderStyle.solid,
                     ),
 
-                    boxShadow: [
-                      new BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 0.5
-                      )
-                    ]
+                ),
+
+                child: CachedNetworkImage(
+                  imageUrl: coin.urlPicture==null ? "" : coin.urlPicture,
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
 

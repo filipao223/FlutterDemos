@@ -41,7 +41,8 @@ class DBHandler{
         id: maps[i]['id'],
         price: maps[i]['price'],
         volumeMonth: maps[i]['volume_month'],
-        urlPicture: maps[i]['url_picture']
+        urlPicture: maps[i]['url_picture'],
+        lastPrice: maps[i]['last_price']
       );
     });
   }

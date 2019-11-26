@@ -13,6 +13,16 @@ class CryptoListState extends State<CryptoList> {
   List<Coin> _favorites;
   DBHandler dbHandler;
 
+
+  void debugPrintCustom(List<dynamic> data){
+    int i=0;
+    data.forEach((e){
+      if (i>10) return;
+
+      print(e.toString());
+    });
+  }
+
   void _initDBHandler(){
     this.dbHandler = new DBHandler();
     dbHandler.init();
@@ -45,7 +55,15 @@ class CryptoListState extends State<CryptoList> {
           /*Response JSON contains many 'null' values, ensure these don't get added to the list*/
           if (!data['name'].toString().contains("null") && (double.tryParse(data['price_usd'].toString()) != null)) {
             print(data["name"]);
-            _coinList.add(new Coin(name: data['name'], id: data['asset_id'], price: double.parse(data['price_usd'].toString()), volumeMonth: double.parse(data['volume_1mth_usd'].toString())));
+            _coinList.add(
+                new Coin(
+                  name: data['name'],
+                  id: data['asset_id'],
+                  price: double.parse(data['price_usd'].toString()),
+                  volumeMonth: double.parse(data['volume_1mth_usd'].toString()),
+                  lastPrice: double.parse(data['price_usd'].toString())
+                )
+            );
           }
         }
     );
@@ -66,11 +84,13 @@ class CryptoListState extends State<CryptoList> {
     setState(() {
       _coinList.sort((coin1, coin2) => coin2.price.compareTo(coin1.price));
     });
+
+    debugPrintCustom(dataMap);
   }
 
 
 
-
+  //TODO: Allow searching through the downloaded list
 
 
   @override
@@ -197,11 +217,12 @@ class CryptoList extends StatefulWidget{
 class Coin{
   final String name;
   final String id;
-  final double price;
-  final double volumeMonth;
+  double price;
+  double lastPrice;
+  double volumeMonth;
   String urlPicture = "";
 
-  Coin({this.name, this.id, this.price, this.volumeMonth, this.urlPicture});
+  Coin({this.name, this.id, this.price, this.volumeMonth, this.urlPicture, this.lastPrice});
 
   Map<String, dynamic> toMap(){
     return {
@@ -209,7 +230,8 @@ class Coin{
       "price" : price,
       "volume_month" : volumeMonth,
       "name" : name,
-      "url_picture" : urlPicture
+      "url_picture" : urlPicture,
+      "last_price" : lastPrice
     };
   }
 }

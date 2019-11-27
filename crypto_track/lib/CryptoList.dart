@@ -11,6 +11,9 @@ class CryptoListState extends State<CryptoList> {
   String _apiKey = "null";
   List<Coin> _coinList = List<Coin>();
   List<Coin> _favorites;
+  List<Coin> _searchList;
+  String searchString;
+  bool isSearching = false;
   DBHandler dbHandler;
 
 
@@ -90,7 +93,39 @@ class CryptoListState extends State<CryptoList> {
 
 
 
-  //TODO: Allow searching through the downloaded list
+  void startSearch(){
+    if (_searchList==null) _searchList = new List<Coin>();
+    _searchList.clear();
+    _searchList.addAll(_coinList.getRange(0, _coinList.length));
+
+    setState(() {
+      isSearching = true;
+    });
+  }
+
+
+
+  void onSearchStringChange(String newString){
+    if (newString != ""){
+      _searchList.clear();
+      _searchList.addAll( _coinList.where((coin) => coin.name.toLowerCase().contains(newString.toLowerCase())) );
+
+      setState(() {
+
+      });
+    }
+    else{
+      setState(() {
+        isSearching = false;
+      });
+    }
+  }
+
+
+
+
+  //TODO: Align appbar after getting info from API to match the one before
+  //TODO: Change search bar text style
 
 
   @override
@@ -98,7 +133,7 @@ class CryptoListState extends State<CryptoList> {
     if (_coinList.isEmpty){
       return Scaffold(
           appBar: AppBar(
-            title: Text("CryptoTrack"),
+            title: Text("Search"),
           ),
           body: Center(
             child: Text("Getting info from API"),
@@ -106,12 +141,47 @@ class CryptoListState extends State<CryptoList> {
 
       );
     }
+
     else{
       _favorites = ModalRoute.of(context).settings.arguments;
 
       return new Scaffold(
           appBar: AppBar(
-            title: Text("CryptoTrack"),
+            automaticallyImplyLeading: false,
+            title: new Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+
+              children: <Widget>[
+
+                new IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                ),
+
+                new Text(
+                  "Search"
+                ),
+
+                new Flexible(
+                  child: new Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+
+                    child: new TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Enter a search term'
+                      ),
+
+                      onTap: () => startSearch(),
+
+                      onChanged: (string) => onSearchStringChange(string),
+                    ),
+                  )
+                )
+
+              ],
+            )
           ),
           body: _buildList()
 
@@ -123,23 +193,33 @@ class CryptoListState extends State<CryptoList> {
 
 
   Widget _buildList(){
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: (context, i){
-          return buildCard(_coinList[i]);
-        }
-    );
+    if (isSearching){
+      if (_searchList.isEmpty) return new Center(child: new Text("Nothing here"),);
+      else{
+        return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: _searchList.length,
+            itemBuilder: (context, i){
+              return buildCard(_searchList[i]);
+            }
+        );
+      }
+    }
+    else{
+      return ListView.builder(
+          padding: const EdgeInsets.all(16.0),
+          itemCount: _coinList.length,
+          itemBuilder: (context, i){
+            return buildCard(_coinList[i]);
+          }
+      );
+    }
   }
 
 
 
 
   Widget buildCard(Coin coin){
-
-    /*Check if user has already saved this coin*/
-    var _isSaved = _favorites.firstWhere((coinInList) =>
-       coinInList.id == coin.id, orElse: () => null
-    );
 
     return new Card(
       child: new Padding(

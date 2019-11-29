@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: cirrusci/flutter
-    working_directory: ~/crypto_track
+    working_directory: ~/crypto_track/crypto_track
     steps:
       - checkout
       - run: echo $PWD

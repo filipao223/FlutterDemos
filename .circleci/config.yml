@@ -7,5 +7,6 @@ jobs:
     steps:
       - checkout
       - run: echo $PWD
+      - run: ls -a
       - run: flutter doctor
       - run: flutter -v build apk

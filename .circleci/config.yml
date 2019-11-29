@@ -6,5 +6,6 @@ jobs:
     working_directory: ~/crypto_track
     steps:
       - checkout
+      - run: echo "Current dir: $working_directory"
       - run: flutter doctor
       - run: flutter -v build apk

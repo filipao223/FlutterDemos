@@ -17,7 +17,9 @@ void main(){
           initialRoute: homeRoute,
           routes: {
             homeRoute : (context) => Home(),
-          }
+          },
+
+
       )
   );
 }

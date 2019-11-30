@@ -2,18 +2,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notes/Folders.dart';
+import 'package:notes/Saved.dart';
+import 'package:notes/SingleNotes.dart';
 
 class HomeState extends State<Home>{
   
   List<Note> noteList;
+  int selectedBottomNavItem = 0;
+  PageController _pageController = PageController();
 
-  void createPlaceholderNotes(){
-    noteList = new List<Note>();
-    
-    noteList.add(new Note(noteId: 1, noteTitle: "title1", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
-    noteList.add(new Note(noteId: 2, noteTitle: "title2", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
-    noteList.add(new Note(noteId: 3, noteTitle: "title3", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
+
+
+  void onItemTapped(int index){
+    _pageController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
+
+
+
+  void onPageChanged(int page){
+    setState(() {
+      selectedBottomNavItem = page;
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,85 +35,46 @@ class HomeState extends State<Home>{
       appBar: AppBar(
         title: Text("Notes"),
       ),
-      body: buildList(),
-    );
-  }
-
-  Widget buildList(){
-
-    return ListView.builder(
-      itemCount: noteList.length,
-      itemBuilder: (context, i){
-        return buildItem(noteList[i]);
-      },
-    );
-  }
-
-  Widget buildItem(Note note){
-
-    return Card(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
+      body: PageView(
+        controller: _pageController,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 8.0),
-            child: Icon(Icons.insert_drive_file),
-          ),
 
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
+          SingleNotes().createState().build(context),
+          Folders().createState().build(context),
+          Saved().createState().build(context)
 
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "${note.noteTitle}",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontSize: 12
-                      ),
-                    ),
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "${note.content.substring(0, note.content.length>20 ? 20 : note.content.length)}",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 10
-                      ),
-                    ),
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "${note.dateCreated.toIso8601String()}",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 9
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.menu)
-          )
         ],
+
+        onPageChanged: onPageChanged,
+      ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.insert_drive_file),
+            title: Text("Notes")
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder),
+            title: Text("Folders")
+          ),
+
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            title: Text("Favorites")
+          ),
+        ],
+
+        currentIndex: selectedBottomNavItem,
+        onTap: onItemTapped,
       ),
     );
   }
+
+
 
 }
 
@@ -110,7 +84,7 @@ class Home extends StatefulWidget{
 
   HomeState createState(){
     HomeState homeState = new HomeState();
-    homeState.createPlaceholderNotes();
+    //homeState.createPlaceholderNotes();
     return homeState;
   }
 }

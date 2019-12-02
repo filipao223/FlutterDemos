@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/constants.dart';
-import 'package:notes/Home.dart';
+import 'package:notes/BottomNav.dart';
 
 void main(){
   runApp(
@@ -16,7 +16,7 @@ void main(){
           //onGenerateRoute: Router.generateRoute,
           initialRoute: homeRoute,
           routes: {
-            homeRoute : (context) => Home(),
+            homeRoute : (context) => BottomNav(),
           },
 
 

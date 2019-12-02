@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:notes/Note.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 
@@ -10,9 +11,9 @@ class SingleNotesState extends State<SingleNotes>{
   void createPlaceholderNotes(){
     noteList = new List<Note>();
 
-    noteList.add(new Note(noteId: 1, noteTitle: "title1", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
-    noteList.add(new Note(noteId: 2, noteTitle: "title2", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
-    noteList.add(new Note(noteId: 3, noteTitle: "title3", content: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
+    noteList.add(new Note(noteId: 1, noteTitle: "title1", noteContent: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
+    noteList.add(new Note(noteId: 2, noteTitle: "title2", noteContent: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
+    noteList.add(new Note(noteId: 3, noteTitle: "title3", noteContent: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
   }
 
 
@@ -71,7 +72,7 @@ class SingleNotesState extends State<SingleNotes>{
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${note.content.substring(0, note.content.length>20 ? 20 : note.content.length)}",
+                      "${note.noteContent.substring(0, note.noteContent.length>20 ? 20 : note.noteContent.length)}",
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 10
@@ -113,15 +114,4 @@ class SingleNotes extends StatefulWidget{
     singleNotesState.createPlaceholderNotes();
     return singleNotesState;
   }
-}
-
-
-class Note{
-  final int noteId;
-  String noteTitle;
-  String content;
-  final DateTime dateCreated;
-  DateTime dateLastEdited;
-
-  Note({this.noteId, this.noteTitle, this.content, this.dateCreated, this.dateLastEdited});
 }

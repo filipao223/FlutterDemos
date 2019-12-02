@@ -1,16 +1,19 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notes/DBHandler.dart';
 import 'package:notes/Folders.dart';
 import 'package:notes/Saved.dart';
 import 'package:notes/SingleNotes.dart';
+import 'package:notes/Note.dart';
 
-class HomeState extends State<Home>{
+class BottomNavState extends State<BottomNav>{
   
   List<Note> noteList;
   int selectedBottomNavItem = 0;
   PageController _pageController = PageController();
+  DBHandler dbHandler;
+  bool checkedDatabase = false;
 
 
 
@@ -27,6 +30,25 @@ class HomeState extends State<Home>{
   }
 
 
+  void initDBHandler(){
+    this.dbHandler = DBHandler();
+  }
+
+
+
+  void getNotesFromDatabase() async{
+    await dbHandler.init();
+    if (noteList == null) noteList = new List<Note>();
+
+    List<Note> retrievedNotes = await dbHandler.retrieveNotes();
+
+    setState(() {
+      checkedDatabase = true;
+      noteList.addAll(retrievedNotes);
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +61,9 @@ class HomeState extends State<Home>{
         controller: _pageController,
         children: <Widget>[
 
-          SingleNotes().createState().build(context),
-          Folders().createState().build(context),
-          Saved().createState().build(context)
+          SingleNotes(),
+          Folders(),
+          Saved()
 
         ],
 
@@ -80,23 +102,11 @@ class HomeState extends State<Home>{
 
 
 
-class Home extends StatefulWidget{
+class BottomNav extends StatefulWidget{
 
-  HomeState createState(){
-    HomeState homeState = new HomeState();
+  BottomNavState createState(){
+    BottomNavState homeState = new BottomNavState();
     //homeState.createPlaceholderNotes();
     return homeState;
   }
-}
-
-
-
-class Note{
-  final int noteId;
-  String noteTitle;
-  String content;
-  final DateTime dateCreated;
-  DateTime dateLastEdited;
-
-  Note({this.noteId, this.noteTitle, this.content, this.dateCreated, this.dateLastEdited});
 }

@@ -2,8 +2,12 @@
 
 
 import 'package:flutter/material.dart';
+import 'Note.dart';
 
 class SavedState extends State<Saved>{
+
+  List<Note> noteList;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

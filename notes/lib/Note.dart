@@ -15,7 +15,8 @@ class Note{
       "description" : noteDescription,
       "content" : noteContent,
       "created" : dateCreated.toIso8601String(),
-      "last_edited" : dateLastEdited.toIso8601String()
+      "last_edited" : dateLastEdited.toIso8601String(),
+      "is_saved" : 0
     };
   }
 }

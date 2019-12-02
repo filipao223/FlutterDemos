@@ -10,6 +10,9 @@ class FoldersState extends State<Folders>{
   List<Folder> folderList;
 
 
+  FoldersState(List<Folder> list){this.folderList = List<Folder>(); folderList.addAll(list);}
+
+
   void addPlaceholderFolders(){
     folderList = List<Folder>();
     folderList.add(new Folder(folderId: 1, folderTitle: "title1", folderDescription: "testtest"));
@@ -73,8 +76,12 @@ class FoldersState extends State<Folders>{
 
 class Folders extends StatefulWidget{
 
+  List<Folder> folderList;
+
+  Folders(List<Folder> list){this.folderList = list;}
+
   FoldersState createState(){
-    FoldersState foldersState = FoldersState();
+    FoldersState foldersState = FoldersState(folderList);
     foldersState.addPlaceholderFolders();
     return foldersState;
   }

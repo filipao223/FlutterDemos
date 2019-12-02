@@ -8,6 +8,7 @@ import 'package:notes/Folder.dart';
 
 class DBHandler{
   Future<Database> database;
+  int currentId;
 
   init() async{
     /*Create database path (for iOS and Android)*/
@@ -17,16 +18,34 @@ class DBHandler{
     database = openDatabase(
       path,
       onCreate: (database, version){
-        return database.execute(
-          "CREATE TABLE $databaseNotesTableName ($databaseNotesTableProperties)",
-        );
+        var batchDb = database.batch();
+        batchDb.execute("CREATE TABLE $databaseFoldersTableName ($databaseFoldersTableProperties)");
+        batchDb.execute("CREATE TABLE $databaseNotesTableName ($databaseNotesTableProperties)");
+        return batchDb.commit();
       },
       version: 1,
     );
   }
 
+
+  Future<void> checkCurrentId() async{
+    final Database db = await database;
+
+    var data = await db.rawQuery("SELECT * FROM $databaseNotesTableName ORDER BY id DESC LIMIT 1");
+    if (data != null && data.length > 0){
+      currentId = data[0]["id"] + 1;
+    }
+    else currentId = 0;
+
+    print("CURRENT ID: $currentId");
+  }
+
+
   Future<int> addNote(Note note) async{
     final Database db = await database;
+
+    //Get max id
+    await checkCurrentId();
 
     return db.insert(databaseNotesTableName, note.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }

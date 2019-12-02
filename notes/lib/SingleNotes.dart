@@ -7,6 +7,8 @@ class SingleNotesState extends State<SingleNotes>{
 
   List<Note> noteList;
 
+  SingleNotesState(List<Note> list){this.noteList = List<Note>(); noteList.addAll(list);}
+
 
   void createPlaceholderNotes(){
     noteList = new List<Note>();
@@ -108,10 +110,14 @@ class SingleNotesState extends State<SingleNotes>{
 
 class SingleNotes extends StatefulWidget{
 
+  List<Note> noteList;
+
+  SingleNotes(List<Note> list){this.noteList = list;}
+
   SingleNotesState createState(){
-    SingleNotesState singleNotesState = SingleNotesState();
+    SingleNotesState singleNotesState = SingleNotesState(noteList);
     /*Do something*/
-    singleNotesState.createPlaceholderNotes();
+    //singleNotesState.createPlaceholderNotes();
     return singleNotesState;
   }
 }

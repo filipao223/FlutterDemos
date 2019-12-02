@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/AddNote.dart';
 import 'package:notes/constants.dart';
 import 'package:notes/BottomNav.dart';
 
@@ -17,6 +18,7 @@ void main(){
           initialRoute: homeRoute,
           routes: {
             homeRoute : (context) => BottomNav(),
+            addNoteRoute : (context) => AddNote(),
           },
 
 

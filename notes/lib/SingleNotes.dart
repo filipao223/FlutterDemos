@@ -7,7 +7,7 @@ class SingleNotesState extends State<SingleNotes>{
 
   List<Note> noteList;
 
-  SingleNotesState(List<Note> list){this.noteList = List<Note>(); noteList.addAll(list);}
+  SingleNotesState(List<Note> list){this.noteList = list;}
 
 
   void createPlaceholderNotes(){

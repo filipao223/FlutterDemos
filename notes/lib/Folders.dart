@@ -10,7 +10,7 @@ class FoldersState extends State<Folders>{
   List<Folder> folderList;
 
 
-  FoldersState(List<Folder> list){this.folderList = List<Folder>(); folderList.addAll(list);}
+  FoldersState(List<Folder> list){this.folderList = list;}
 
 
   void addPlaceholderFolders(){

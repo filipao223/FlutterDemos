@@ -48,6 +48,8 @@ class BottomNavState extends State<BottomNav>{
       checkedDatabase = true;
       noteList.addAll(retrievedNotes);
       //folderList.addAll(retrievedFolders);
+
+      noteList.sort((note1, note2)=>note2.dateCreated.compareTo(note1.dateCreated));
     });
   }
 
@@ -88,14 +90,20 @@ class BottomNavState extends State<BottomNav>{
 
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: (){
-          if (selectedBottomNavItem == 0) Navigator.pushNamed(context, addNoteRoute).then((_){
-            setState(() {
-              //TODO: Add the new note to the list, without querying the database again
+        onPressed: () async{
+          if (selectedBottomNavItem == 0){
+            var result = await Navigator.pushNamed(context, addNoteRoute);
+            if (result != null && result is Note) setState(() {
+              noteList.insert(0, result);
             });
-          });
-          else if (selectedBottomNavItem == 1) Navigator.pushNamed(context, addNoteRoute); //TODO: Change this route
-        },
+          }
+          else if (selectedBottomNavItem == 1){ //TODO: Change this route
+            var result = await Navigator.pushNamed(context, addNoteRoute);
+            if (result != null && result is Folder) setState(() {
+              folderList.insert(0, result);
+            });
+          }
+  },
       ),
     );
   }

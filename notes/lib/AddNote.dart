@@ -24,18 +24,18 @@ class AddNoteState extends State<AddNote>{
     await dbHandler.init();
     await dbHandler.checkCurrentId();
 
-    await dbHandler.addNote(
-        Note(noteId: dbHandler.currentId,
-            noteTitle: titleController.text,
-            noteDescription: descriptionController.text,
-            noteContent: contentController.text,
-            dateCreated: DateTime.now(),
-            dateLastEdited: DateTime.now()
-        )
+    Note note = Note(noteId: dbHandler.currentId,
+        noteTitle: titleController.text,
+        noteDescription: descriptionController.text,
+        noteContent: contentController.text,
+        dateCreated: DateTime.now(),
+        dateLastEdited: DateTime.now()
     );
 
+    await dbHandler.addNote(note);
+
     Fluttertoast.showToast(msg: "Added new note", toastLength: Toast.LENGTH_LONG);
-    Navigator.pop(context);
+    Navigator.pop(context, note);
   }
 
 

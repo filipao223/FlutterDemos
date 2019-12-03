@@ -5,12 +5,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/DBHandler.dart';
 import 'package:notes/Note.dart';
 
+import 'Folder.dart';
+import 'constants.dart';
+
 class SingleNotesState extends State<SingleNotes>{
 
   List<Note> noteList;
+  List<Folder> folderList;
   DBHandler dbHandler = DBHandler();
+  TextEditingController folderTitleController = TextEditingController();
 
-  SingleNotesState(List<Note> list){this.noteList = list;}
+  SingleNotesState(List<Note> listNotes, List<Folder> listFolders){this.noteList = listNotes; this.folderList = listFolders;}
 
 
   void createPlaceholderNotes(){
@@ -23,7 +28,7 @@ class SingleNotesState extends State<SingleNotes>{
 
 
   //TODO: Handle 'add note to a folder'
-  void popupMenuController(var value){
+  void popupMenuController(var value, BuildContext context){
     if (value is Note){
       //Delete note
       dbHandler.removeNote(value);
@@ -33,6 +38,16 @@ class SingleNotesState extends State<SingleNotes>{
       });
 
       Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
+    }
+
+    else{
+      //Add note to a folder
+      showDialog(
+        context: context,
+        builder: (context){
+          return buildAlertDialog();
+        }
+      );
     }
   }
 
@@ -138,11 +153,99 @@ class SingleNotesState extends State<SingleNotes>{
                   )
                 ],
 
-                onSelected: popupMenuController,
+                onSelected: (value){
+                  popupMenuController(value, context);
+                },
               )
           )
         ],
       ),
+    );
+  }
+
+
+  /*Widgets for the list of folders when clicking on 'add a note to a folder' on each popup menu*/
+  Widget buildAlertDialog(){
+    return AlertDialog(
+      title: Text("Choose folder"),
+      content: buildAddToFolderDialogList(),
+
+    );
+  }
+
+  Widget buildAddToFolderDialogList(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                  controller: folderTitleController,
+
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'New folder title',
+                  )
+              ),
+            ),
+
+            Align(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () async{
+                  //Create a new folder and add the note to the folder, only if there is a valid title written on the text field
+                  if (folderTitleController.text == "") Fluttertoast.showToast(msg: "Please name the folder before creating it");
+                  else{
+                    await dbHandler.checkCurrentId(isFolder);
+                    int id = dbHandler.currentFolderId;
+                    Folder folder = Folder(folderId: id, folderTitle: folderTitleController.text, folderDescription: "");
+
+                    await dbHandler.addFolder(folder);
+
+                    setState(() {
+                      folderList.add(folder);
+                    });
+
+                    //TODO: Also add the note to the folder
+                    Fluttertoast.showToast(msg: "Added note to new folder", toastLength: Toast.LENGTH_LONG);
+
+                    Navigator.pop(context);
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+
+        Padding(
+          padding: EdgeInsets.only(top: 8.0, left: 3.0, right: 3.0, bottom: 3.0),
+          child:
+            folderList.length > 0 ?
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: folderList.length,
+                itemBuilder: (context, i){
+                  return buildAddToFolderDialogItem(folderList[i]);
+                },
+              )
+            :
+              Text("No folders here")
+        )
+      ],
+    );
+  }
+
+  //TODO: Improve the layout of the folder list in the alert dialog
+  Widget buildAddToFolderDialogItem(Folder folder){
+    return ListTile(
+      title: Text("${folder.folderTitle}"),
+      subtitle: Text("${folder.folderDescription}"),
     );
   }
 }
@@ -151,11 +254,12 @@ class SingleNotesState extends State<SingleNotes>{
 class SingleNotes extends StatefulWidget{
 
   List<Note> noteList;
+  List<Folder> folderList;
 
-  SingleNotes(List<Note> list){this.noteList = list;}
+  SingleNotes(List<Note> listNotes, List<Folder> listFolders){this.noteList = listNotes; this.folderList = listFolders;}
 
   SingleNotesState createState(){
-    SingleNotesState singleNotesState = SingleNotesState(noteList);
+    SingleNotesState singleNotesState = SingleNotesState(noteList, folderList);
     /*Do something*/
     //singleNotesState.createPlaceholderNotes();
     return singleNotesState;

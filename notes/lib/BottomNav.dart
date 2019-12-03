@@ -42,12 +42,12 @@ class BottomNavState extends State<BottomNav>{
     if (folderList == null) folderList = List<Folder>();
 
     List<Note> retrievedNotes = await dbHandler.retrieveNotes();
-    //List<Folder> retrievedFolders = await dbHandler.retrieveFolders():
+    List<Folder> retrievedFolders = await dbHandler.retrieveFolders();
 
     setState(() {
       checkedDatabase = true;
       noteList.addAll(retrievedNotes);
-      //folderList.addAll(retrievedFolders);
+      folderList.addAll(retrievedFolders);
 
       noteList.sort((note1, note2)=>note2.dateCreated.compareTo(note1.dateCreated));
     });
@@ -116,7 +116,7 @@ class BottomNavState extends State<BottomNav>{
         controller: _pageController,
         children: <Widget>[
 
-          SingleNotes(noteList),
+          SingleNotes(noteList, folderList),
           Folders(folderList),
           Saved()
 

@@ -114,8 +114,8 @@ class Folders extends StatefulWidget{
   FoldersState createState(){
     FoldersState foldersState = FoldersState(folderList);
     /*Run these two at same time*/
-    foldersState.addPlaceholderFolders();
-    foldersState.folderList[0].createPlaceholderNotes();
+    //foldersState.addPlaceholderFolders();
+    //foldersState.folderList[0].createPlaceholderNotes();
     /***********^^**************/
     return foldersState;
   }

@@ -103,6 +103,20 @@ class DBHandler{
     });
   }
 
+  Future<List<Folder>> retrieveFolders() async{
+    final Database db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query(databaseFoldersTableName);
+
+    return List.generate(maps.length, (i) {
+      return Folder(
+        folderId: maps[i]['id'],
+        folderTitle: maps[i]['title'],
+        folderDescription: maps[i]['description']
+      );
+    });
+  }
+
 
   Future<int> removeNote(Note note) async{
     final Database db = await database;

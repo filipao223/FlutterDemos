@@ -8,7 +8,7 @@ import 'package:notes/Folder.dart';
 
 class DBHandler{
   Future<Database> database;
-  int currentId;
+  int currentNoteId, currentFolderId;
 
   init() async{
     /*Create database path (for iOS and Android)*/
@@ -28,16 +28,20 @@ class DBHandler{
   }
 
 
-  Future<void> checkCurrentId() async{
+  Future<void> checkCurrentId(int type) async{
     final Database db = await database;
 
-    var data = await db.rawQuery("SELECT * FROM $databaseNotesTableName ORDER BY id DESC LIMIT 1");
+    var data = await db.rawQuery("SELECT * FROM ${type == isNote ? databaseNotesTableName : databaseFoldersTableName} ORDER BY id DESC LIMIT 1");
     if (data != null && data.length > 0){
-      currentId = data[0]["id"] + 1;
+      if (type == isNote) currentNoteId = data[0]["id"] + 1;
+      else currentFolderId = data[0]["id"] + 1;
     }
-    else currentId = 0;
+    else{
+      if (type == isNote) currentNoteId = 0;
+      else currentFolderId = 0;
+    }
 
-    print("CURRENT ID: $currentId");
+    print("CURRENT ${type == isNote ? "NOTE" : "FOLDER"} ID: ${type == isNote ? currentNoteId : currentFolderId}");
   }
 
 
@@ -45,7 +49,7 @@ class DBHandler{
     final Database db = await database;
 
     //Get max id
-    await checkCurrentId();
+    await checkCurrentId(isNote);
 
     return db.insert(databaseNotesTableName, note.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
@@ -64,12 +68,19 @@ class DBHandler{
 
   Future<int> addFolder(Folder folder) async{
     //TODO: Implement addFolder
-    return 0;
+    final Database db = await database;
+
+    //Get max id
+    await checkCurrentId(isFolder);
+
+    return db.insert(databaseFoldersTableName, folder.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> removeFolder(Folder folder) async{
     //TODO: Implement removeFolder
-    return 0;
+    final Database db = await database;
+
+    return db.delete(databaseNotesTableName, where: "id = ?", whereArgs: [folder.folderId]);
   }
 
 

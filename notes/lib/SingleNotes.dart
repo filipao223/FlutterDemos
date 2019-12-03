@@ -1,11 +1,14 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:notes/DBHandler.dart';
 import 'package:notes/Note.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 
   List<Note> noteList;
+  DBHandler dbHandler = DBHandler();
 
   SingleNotesState(List<Note> list){this.noteList = list;}
 
@@ -17,6 +20,29 @@ class SingleNotesState extends State<SingleNotes>{
     noteList.add(new Note(noteId: 2, noteTitle: "title2", noteContent: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
     noteList.add(new Note(noteId: 3, noteTitle: "title3", noteContent: "test", dateCreated: DateTime.now(), dateLastEdited: DateTime.now()));
   }
+
+
+  //TODO: Handle 'add note to a folder'
+  void popupMenuController(var value){
+    if (value is Note){
+      //Delete note
+      dbHandler.removeNote(value);
+
+      setState(() {
+        noteList.remove(value);
+      });
+
+      Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
+    }
+  }
+
+
+  @override
+  void initState() {
+    dbHandler.init();
+    super.initState();
+  }
+
 
 
   @override
@@ -99,7 +125,21 @@ class SingleNotesState extends State<SingleNotes>{
 
           Padding(
               padding: EdgeInsets.only(right: 8.0),
-              child: Icon(Icons.menu)
+              child: PopupMenuButton(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: note,
+                    child: Text("Delete note"),
+                  ),
+
+                  PopupMenuItem(
+                    value: 2,
+                    child: Text("Add note to a folder"),
+                  )
+                ],
+
+                onSelected: popupMenuController,
+              )
           )
         ],
       ),

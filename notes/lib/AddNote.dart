@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/DBHandler.dart';
 
 import 'Note.dart';
+import 'constants.dart';
 
 class AddNoteState extends State<AddNote>{
 
@@ -22,9 +23,9 @@ class AddNoteState extends State<AddNote>{
   void onSavePressed() async{
 
     await dbHandler.init();
-    await dbHandler.checkCurrentId();
+    await dbHandler.checkCurrentId(isNote);
 
-    Note note = Note(noteId: dbHandler.currentId,
+    Note note = Note(noteId: dbHandler.currentNoteId,
         noteTitle: titleController.text,
         noteDescription: descriptionController.text,
         noteContent: contentController.text,

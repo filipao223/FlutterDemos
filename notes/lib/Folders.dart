@@ -32,42 +32,73 @@ class FoldersState extends State<Folders>{
 
   }
 
-
+  //TODO: Folder list looks different than note list (and eventually saved list), maybe try using expansion tile and list view
   Widget buildList(){
-    return ExpansionPanelList(
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: ExpansionPanelList(
 
-      expansionCallback: (index, isExpanded){
-        setState(() {
-          folderList[index].isExpanded = !isExpanded;
-        });
-      },
+        expansionCallback: (index, isExpanded){
+          setState(() {
+            folderList[index].isExpanded = !isExpanded;
+          });
+        },
 
-      children: folderList.map<ExpansionPanel>( (Folder folder){
-        return ExpansionPanel(
-          headerBuilder: (context, isExpanded){
-            return buildHeader(folder);
-          },
+        children: folderList.map<ExpansionPanel>( (Folder folder){
+          return ExpansionPanel(
+              headerBuilder: (context, isExpanded){
+                return buildHeader(folder);
+              },
 
-          body: buildBody(folder),
+              body: buildBody(folder),
 
-          isExpanded: folder.isExpanded
-        );
-      }).toList(),
+              isExpanded: folder.isExpanded
+          );
+        }).toList(),
+      ),
     );
   }
 
 
   Widget buildHeader(Folder folder){
     return ListTile(
-      title: Text("${folder.folderTitle}"),
-      subtitle: Text("${folder.folderDescription}"),
+      title: Text("${folder.folderTitle}", style: TextStyle(fontFamily: "Roboto")),
+      subtitle: Text("${folder.folderDescription}", style: TextStyle(fontFamily: "Roboto")),
     );
   }
 
-
+  //TODO: Add a 'view more' at the end of the panel if more than 3 notes exists, opens a new scaffold with the full list
   Widget buildBody(Folder folder){
-    return Center(
-      child: Text("Expanded"),
+    if (folder.noteList.length > 0){
+      return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: folder.noteList.length,
+        itemBuilder: (context, i){
+          return buildItem(folder.noteList[i]);
+        },
+      );
+    }
+
+    else return Text("");
+  }
+
+  Widget buildItem(Note note){
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(3.0),
+        child: ListTile(
+          title: Text(
+            "${note.noteTitle}",
+            style: TextStyle(fontSize: 13, fontFamily: "Roboto"),
+          ),
+
+          subtitle: Text(
+            "${note.noteDescription}",
+            style: TextStyle(fontSize: 11, fontFamily: "Roboto"),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -82,7 +113,10 @@ class Folders extends StatefulWidget{
 
   FoldersState createState(){
     FoldersState foldersState = FoldersState(folderList);
+    /*Run these two at same time*/
     foldersState.addPlaceholderFolders();
+    foldersState.folderList[0].createPlaceholderNotes();
+    /***********^^**************/
     return foldersState;
   }
 }

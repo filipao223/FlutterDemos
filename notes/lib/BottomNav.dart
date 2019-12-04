@@ -35,7 +35,6 @@ class BottomNavState extends State<BottomNav>{
 
 
 
-  //TODO: Add folder retrieval
   void getNotesFromDatabase() async{
     await dbHandler.init();
     if (noteList == null) noteList = List<Note>();
@@ -43,6 +42,8 @@ class BottomNavState extends State<BottomNav>{
 
     List<Note> retrievedNotes = await dbHandler.retrieveNotes();
     List<Folder> retrievedFolders = await dbHandler.retrieveFolders();
+
+    //TODO: Fill each folder's note list with correct notes
 
     setState(() {
       checkedDatabase = true;
@@ -91,18 +92,11 @@ class BottomNavState extends State<BottomNav>{
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async{
-          if (selectedBottomNavItem == 0){
-            var result = await Navigator.pushNamed(context, addNoteRoute);
-            if (result != null && result is Note) setState(() {
-              noteList.insert(0, result);
-            });
-          }
-          else if (selectedBottomNavItem == 1){ //TODO: Change this route
-            var result = await Navigator.pushNamed(context, addNoteRoute);
-            if (result != null && result is Folder) setState(() {
-              folderList.insert(0, result);
-            });
-          }
+          /*Open the AddNote page where a new note can be created, and add it to the list if created*/
+          var result = await Navigator.pushNamed(context, addNoteRoute);
+          if (result != null && result is Note) setState(() {
+            noteList.insert(0, result);
+          });
   },
       ),
     );

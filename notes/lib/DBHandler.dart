@@ -56,18 +56,21 @@ class DBHandler{
 
 
 
-  Future<int> addNoteToFolder(Note note) async{
+  Future<int> addNoteToFolder(Folder folder, Note note) async{
     //TODO: Implement addNoteToFolder
-    return 0;
+    final Database db = await database;
+
+    return db.rawUpdate("UPDATE $databaseNotesTableName SET folder_id = ${folder.folderId} WHERE id = ${note.noteId}");
   }
 
   Future<int> removeNoteFromFolder(Note note) async{
     //TODO: Implement removeNoteFromFolder
-    return 0;
+    final Database db = await database;
+
+    return db.rawUpdate("UPDATE $databaseNotesTableName SET folder_id = null WHERE id = ${note.noteId}");
   }
 
   Future<int> addFolder(Folder folder) async{
-    //TODO: Implement addFolder
     final Database db = await database;
 
     //Get max id
@@ -77,7 +80,6 @@ class DBHandler{
   }
 
   Future<int> removeFolder(Folder folder) async{
-    //TODO: Implement removeFolder
     final Database db = await database;
 
     return db.delete(databaseNotesTableName, where: "id = ?", whereArgs: [folder.folderId]);

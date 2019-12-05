@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/DBHandler.dart';
 import 'package:notes/Folders.dart';
-import 'package:notes/Saved.dart';
 import 'package:notes/SingleNotes.dart';
 import 'package:notes/Note.dart';
 import 'package:notes/constants.dart';
@@ -12,7 +11,7 @@ import 'Folder.dart';
 
 class BottomNavState extends State<BottomNav>{
   
-  List<Note> noteList;
+  List<Note> noteList, favoriteList;
   List<Folder> folderList;
   int selectedBottomNavItem = 0;
   PageController _pageController = PageController();
@@ -39,18 +38,25 @@ class BottomNavState extends State<BottomNav>{
     await dbHandler.init();
     if (noteList == null) noteList = List<Note>();
     if (folderList == null) folderList = List<Folder>();
+    if (favoriteList == null) favoriteList = List<Note>();
 
     List<Note> retrievedNotes = await dbHandler.retrieveNotes();
     List<Folder> retrievedFolders = await dbHandler.retrieveFolders();
 
     //TODO: Fill each folder's note list with correct notes
 
+    noteList.addAll(retrievedNotes);
+    folderList.addAll(retrievedFolders);
+
+    /*Check which notes are saved*/
+    noteList.forEach((note){
+      if (note.isSaved) favoriteList.add(note);
+    });
+
+    noteList.sort((note1, note2)=>note2.dateCreated.compareTo(note1.dateCreated));
+
     setState(() {
       checkedDatabase = true;
-      noteList.addAll(retrievedNotes);
-      folderList.addAll(retrievedFolders);
-
-      noteList.sort((note1, note2)=>note2.dateCreated.compareTo(note1.dateCreated));
     });
   }
 
@@ -110,9 +116,9 @@ class BottomNavState extends State<BottomNav>{
         controller: _pageController,
         children: <Widget>[
 
-          SingleNotes(noteList, folderList),
+          SingleNotes(noteList, folderList, favoriteList),
           Folders(folderList),
-          Saved()
+          SingleNotes(favoriteList, folderList, favoriteList)
 
         ],
 

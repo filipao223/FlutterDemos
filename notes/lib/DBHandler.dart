@@ -100,7 +100,8 @@ class DBHandler{
           noteDescription: maps[i]['description'],
           noteContent: maps[i]['content'],
           dateCreated: DateTime.parse(maps[i]['created']),
-          dateLastEdited: DateTime.parse(maps[i]['last_edited'])
+          dateLastEdited: DateTime.parse(maps[i]['last_edited']),
+          isSaved: maps[i]['is_saved']==1 ? true : false
       );
     });
   }
@@ -134,6 +135,13 @@ class DBHandler{
     }
 
     return db.delete(databaseNotesTableName, where: "id = ?", whereArgs: [note.noteId]);
+  }
+
+
+  Future<int> changeNoteFavoriteStatus(Note note) async{
+    final Database db = await database;
+
+    return db.update(databaseNotesTableName, note.toMap(), where: "id = ?", whereArgs: [note.noteId]);
   }
 
 }

@@ -5,8 +5,9 @@ class Note{
   String noteContent;
   final DateTime dateCreated;
   DateTime dateLastEdited;
+  bool isSaved = false;
 
-  Note({this.noteId, this.noteTitle, this.noteDescription, this.noteContent, this.dateCreated, this.dateLastEdited});
+  Note({this.noteId, this.noteTitle, this.noteDescription, this.noteContent, this.dateCreated, this.dateLastEdited, this.isSaved});
 
   Map<String, dynamic> toMap(){
     return {
@@ -16,7 +17,7 @@ class Note{
       "content" : noteContent,
       "created" : dateCreated.toIso8601String(),
       "last_edited" : dateLastEdited.toIso8601String(),
-      "is_saved" : 0
+      "is_saved" : isSaved ? 1 : 0
     };
   }
 }

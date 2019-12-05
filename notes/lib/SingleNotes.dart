@@ -11,11 +11,12 @@ import 'constants.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 
-  List<Note> noteList;
+  List<Note> noteList, favoriteList;
   List<Folder> folderList;
   DBHandler dbHandler = DBHandler();
+  Commands commands = Commands();
 
-  SingleNotesState(List<Note> listNotes, List<Folder> listFolders){this.noteList = listNotes; this.folderList = listFolders;}
+  SingleNotesState(List<Note> listNotes, List<Folder> listFolders, List<Note> listFavorites){this.noteList = listNotes; this.folderList = listFolders; this.favoriteList = listFavorites;}
 
 
   void createPlaceholderNotes(){
@@ -29,25 +30,41 @@ class SingleNotesState extends State<SingleNotes>{
 
   //TODO: Handle 'add note to a folder'
   void popupMenuController(var value, BuildContext context){
-    if (value is Note){
+    if (value == commands.deleteNoteVar){
       //Delete note
-      dbHandler.removeNote(value);
+      dbHandler.removeNote(commands.currentNote);
 
       setState(() {
-        noteList.remove(value);
+        noteList.remove(commands.currentNote);
       });
 
       Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
     }
 
-    else{
+    else if (value == commands.addNoteToFolderVar){
       //Add note to a folder
       showDialog(
-        context: context,
-        builder: (context){
-          return AddToFolderDialog(folderList, value[0]);
-        }
+          context: context,
+          builder: (context){
+            return AddToFolderDialog(folderList, commands.currentNote);
+          }
       );
+    }
+
+    else{
+      //TODO: Favorite the note
+      dbHandler.changeNoteFavoriteStatus(commands.currentNote);
+
+      setState(() {
+        if (favoriteList.contains(commands.currentNote)){
+          favoriteList.remove(commands.currentNote);
+          Fluttertoast.showToast(msg: "Removed note from favorites", toastLength: Toast.LENGTH_LONG);
+        }
+        else{
+          favoriteList.add(commands.currentNote);
+          Fluttertoast.showToast(msg: "Added note to favorites", toastLength: Toast.LENGTH_LONG);
+        }
+      });
     }
   }
 
@@ -70,12 +87,26 @@ class SingleNotesState extends State<SingleNotes>{
 
   Widget buildList(){
 
-    return ListView.builder(
-      itemCount: noteList.length,
-      itemBuilder: (context, i){
-        return buildItem(noteList[i]);
-      },
-    );
+    if (noteList.isEmpty){
+      return Center(
+        child: Text(
+          "No notes here",
+          style: TextStyle(
+            fontSize: 12,
+            fontStyle: FontStyle.italic
+          ),
+        ),
+      );
+    }
+
+    else{
+      return ListView.builder(
+        itemCount: noteList.length,
+        itemBuilder: (context, i){
+          return buildItem(noteList[i]);
+        },
+      );
+    }
   }
 
 
@@ -115,7 +146,7 @@ class SingleNotesState extends State<SingleNotes>{
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${note.noteContent.substring(0, note.noteContent.length>20 ? 20 : note.noteContent.length)}",
+                      "${note.noteDescription.substring(0, note.noteDescription.length>20 ? 20 : note.noteDescription.length)}",
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 10
@@ -141,17 +172,41 @@ class SingleNotesState extends State<SingleNotes>{
           Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: PopupMenuButton(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: note,
-                    child: Text("Delete note"),
-                  ),
+                itemBuilder: (context){
+                  var list =  List<PopupMenuEntry<Object>>();
+                  list.add(
+                    PopupMenuItem(
+                      value: commands.deleteNote(note),
+                      child: Text("Delete note"),
+                    )
+                  );
 
-                  PopupMenuItem(
-                    value: [note, 1],
-                    child: Text("Add note to a folder"),
-                  )
-                ],
+                  list.add(
+                    PopupMenuItem(
+                      value: commands.addNoteToFolder(note),
+                      child: Text("Add note to a folder"),
+                    )
+                  );
+
+                  list.add(
+                    PopupMenuDivider(
+                     height: 2.0
+                    )
+                  );
+
+                  list.add(
+                    PopupMenuItem(
+                      //TODO: Check if note is saved in 'favorites'
+                      value: commands.noteSaving(note),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: favoriteList.contains(note) ? Text("Unsave") : Text("Save"),
+                      ),
+                    )
+                  );
+
+                  return list;
+                },
 
                 onSelected: (value){
                   popupMenuController(value, context);
@@ -167,15 +222,38 @@ class SingleNotesState extends State<SingleNotes>{
 
 class SingleNotes extends StatefulWidget{
 
-  List<Note> noteList;
+  List<Note> noteList, favoriteList;
   List<Folder> folderList;
 
-  SingleNotes(List<Note> listNotes, List<Folder> listFolders){this.noteList = listNotes; this.folderList = listFolders;}
+  SingleNotes(List<Note> listNotes, List<Folder> listFolders, List<Note> listFavorites){this.noteList = listNotes; this.folderList = listFolders; this.favoriteList = listFavorites;}
 
   SingleNotesState createState(){
-    SingleNotesState singleNotesState = SingleNotesState(noteList, folderList);
+    SingleNotesState singleNotesState = SingleNotesState(noteList, folderList, favoriteList);
     /*Do something*/
     //singleNotesState.createPlaceholderNotes();
     return singleNotesState;
+  }
+}
+
+
+class Commands{
+  final deleteNoteVar = 1;
+  final addNoteToFolderVar = 2;
+  final noteSavingVar = 3;
+  Note currentNote;
+
+  int deleteNote(Note note){
+    currentNote = note;
+    return deleteNoteVar;
+  }
+
+  int addNoteToFolder(Note note){
+    currentNote = note;
+    return addNoteToFolderVar;
+  }
+
+  int noteSaving(Note note){
+    currentNote = note;
+    return noteSavingVar;
   }
 }

@@ -31,6 +31,9 @@ dependencies:
   sqflite: ^1.1.7+3
   path: ^1.6.4
 
+  #Form library used when creating a new note
+  flutter_form_builder: ^3.7.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

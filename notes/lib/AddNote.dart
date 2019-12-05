@@ -30,7 +30,8 @@ class AddNoteState extends State<AddNote>{
         noteDescription: descriptionController.text,
         noteContent: contentController.text,
         dateCreated: DateTime.now(),
-        dateLastEdited: DateTime.now()
+        dateLastEdited: DateTime.now(),
+        isSaved: false
     );
 
     await dbHandler.addNote(note);

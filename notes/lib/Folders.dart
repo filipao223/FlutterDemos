@@ -24,11 +24,25 @@ class FoldersState extends State<Folders>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return ListView(
-      children: <Widget>[
-        buildList()
-      ],
-    );
+    if (folderList.isEmpty){
+      return Center(
+        child: Text(
+          "No folders here",
+          style: TextStyle(
+            fontSize: 12,
+            fontStyle: FontStyle.italic
+          ),
+        ),
+      );
+    }
+
+    else{
+      return ListView(
+        children: <Widget>[
+          buildList()
+        ],
+      );
+    }
 
   }
 

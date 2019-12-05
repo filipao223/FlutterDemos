@@ -20,7 +20,7 @@ class AddNoteState extends State<AddNote>{
     this.dbHandler = DBHandler();
   }
 
-
+  //TODO: Prevent 'this field is required' message from showing up when first clicking on a field
   void onSavePressed() async{
 
     if (formBuildKey.currentState.saveAndValidate()){

@@ -19,4 +19,5 @@ const List<String> languages = [
   "C++" ,
   "Java" ,
   "Python" ,
+  "Fakelanguage"
 ];

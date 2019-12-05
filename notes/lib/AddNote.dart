@@ -1,6 +1,9 @@
 
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/DBHandler.dart';
 
@@ -9,10 +12,8 @@ import 'constants.dart';
 
 class AddNoteState extends State<AddNote>{
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController contentController = TextEditingController();
   DBHandler dbHandler;
+  final GlobalKey<FormBuilderState> formBuildKey = GlobalKey<FormBuilderState>();
 
 
   void initDBHandler(){
@@ -22,22 +23,26 @@ class AddNoteState extends State<AddNote>{
 
   void onSavePressed() async{
 
-    await dbHandler.init();
-    await dbHandler.checkCurrentId(isNote);
+    if (formBuildKey.currentState.saveAndValidate()){
 
-    Note note = Note(noteId: dbHandler.currentNoteId,
-        noteTitle: titleController.text,
-        noteDescription: descriptionController.text,
-        noteContent: contentController.text,
-        dateCreated: DateTime.now(),
-        dateLastEdited: DateTime.now(),
-        isSaved: false
-    );
+      await dbHandler.init();
+      await dbHandler.checkCurrentId(isNote);
 
-    await dbHandler.addNote(note);
+      Note note = Note(noteId: dbHandler.currentNoteId,
+          noteTitle: formBuildKey.currentState.value['title'],
+          noteDescription: formBuildKey.currentState.value['description'],
+          noteContent: formBuildKey.currentState.value['content'],
+          noteLanguage: formBuildKey.currentState.value.containsKey("language") ? formBuildKey.currentState.value['language'] : "none",
+          dateCreated: DateTime.now(),
+          dateLastEdited: DateTime.now(),
+          isSaved: false
+      );
 
-    Fluttertoast.showToast(msg: "Added new note", toastLength: Toast.LENGTH_LONG);
-    Navigator.pop(context, note);
+      await dbHandler.addNote(note);
+
+      Fluttertoast.showToast(msg: "Added new note", toastLength: Toast.LENGTH_LONG);
+      Navigator.pop(context, note);
+    }
   }
 
 
@@ -45,6 +50,8 @@ class AddNoteState extends State<AddNote>{
   Widget build(BuildContext context) {
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+
       appBar: AppBar(
         title: Text("Add new note"),
         actions: <Widget>[
@@ -52,64 +59,68 @@ class AddNoteState extends State<AddNote>{
         ],
       ),
 
-      body: buildBody(),
+      body: buildForm(),
     );
   }
 
-  Widget buildBody(){
+
+
+  Widget buildForm(){
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-
-        Flexible(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
+        FormBuilder(
+          key: formBuildKey,
+          autovalidate: true,
+          child: Column(
             children: <Widget>[
-              Text("Title: "),
+              FormBuilderTextField(
+                attribute: "title",
+                decoration: InputDecoration(labelText: "Title"),
+                validators: [
+                  FormBuilderValidators.maxLength(30, errorText: "Title is too long"),
+                  FormBuilderValidators.required(errorText: "This field is required")
+                ],
+              ),
 
-              Flexible(
-                child: TextField(
-                  controller: titleController,
-                ),
-              )
+              FormBuilderTextField(
+                attribute: "description",
+                decoration: InputDecoration(labelText: "Description"),
+                validators: [
+                  FormBuilderValidators.maxLength(120, errorText: "Description is too long"),
+                  FormBuilderValidators.required(errorText: "This field is required")
+                ],
+              ),
+
+              FormBuilderTextField(
+                attribute: "content",
+                decoration: InputDecoration(labelText: "Content"),
+                validators: [
+                  FormBuilderValidators.required(errorText: "This field is required")
+                ],
+              ),
+
+              FormBuilderTypeAhead(
+                attribute: "language",
+                decoration: InputDecoration(labelText: "Language"),
+                itemBuilder: (context, suggestion){
+                  return ListTile(
+                    title: Text("$suggestion"),
+                  );
+                },
+                suggestionsCallback: (pattern){
+                  List<String> genList = List<String>();
+
+                  languages.forEach((language){
+                    if (language.toLowerCase().contains(pattern.toLowerCase())) genList.add(language);
+                  });
+
+                  return genList;
+                },
+              ),
+
             ],
           ),
-        ),
-
-        Flexible(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text("Description: "),
-
-              Flexible(
-                child: TextField(
-                  controller: descriptionController,
-                ),
-              )
-            ],
-          ),
-        ),
-
-        Flexible(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text("Content: "),
-
-              Flexible(
-                child: TextField(
-                  controller: contentController,
-                ),
-              )
-            ],
-          ),
-        ),
-
+        )
       ],
     );
   }

@@ -101,7 +101,8 @@ class DBHandler{
           noteContent: maps[i]['content'],
           dateCreated: DateTime.parse(maps[i]['created']),
           dateLastEdited: DateTime.parse(maps[i]['last_edited']),
-          isSaved: maps[i]['is_saved']==1 ? true : false
+          isSaved: maps[i]['is_saved']==1 ? true : false,
+          noteLanguage: maps[i]['language']
       );
     });
   }

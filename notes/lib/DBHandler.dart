@@ -121,6 +121,7 @@ class DBHandler{
   }
 
 
+  //TODO: If the note is also in 'favorite', delete there as well
   Future<int> removeNote(Note note) async{
     final Database db = await database;
 

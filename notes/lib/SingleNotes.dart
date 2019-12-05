@@ -2,12 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:notes/AddToFolderDialog.dart';
 import 'package:notes/DBHandler.dart';
 import 'package:notes/Note.dart';
-
 import 'Folder.dart';
-import 'constants.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 
@@ -157,7 +156,7 @@ class SingleNotesState extends State<SingleNotes>{
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${note.dateCreated.toIso8601String()}",
+                      "${DateFormat('yyyy-MM-dd hh:mm').format(note.dateCreated)}",
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 9

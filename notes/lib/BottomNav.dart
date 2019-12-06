@@ -48,10 +48,18 @@ class BottomNavState extends State<BottomNav>{
     noteList.addAll(retrievedNotes);
     folderList.addAll(retrievedFolders);
 
-    /*Check which notes are saved*/
+    /*Check which notes are saved and if they belong to a folder*/
     noteList.forEach((note){
       if (note.isSaved) favoriteList.add(note);
+      if (note.folderId != -1){
+        Folder folder = folderList.firstWhere((folder) => folder.folderId == note.folderId, orElse: () => null);
+        if (folder != null){
+          folder.noteList.add(note);
+        }
+      }
     });
+
+    /**/
 
     noteList.sort((note1, note2)=>note2.dateCreated.compareTo(note1.dateCreated));
 

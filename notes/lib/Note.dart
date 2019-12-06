@@ -1,5 +1,6 @@
 class Note{
   final int noteId;
+  int folderId = -1;
   String noteTitle;
   String noteDescription;
   String noteContent;
@@ -8,7 +9,7 @@ class Note{
   bool isSaved = false;
   String noteLanguage;
 
-  Note({this.noteId, this.noteTitle, this.noteDescription, this.noteContent, this.dateCreated, this.dateLastEdited, this.isSaved, this.noteLanguage});
+  Note({this.noteId, this.noteTitle, this.noteDescription, this.noteContent, this.dateCreated, this.dateLastEdited, this.isSaved, this.noteLanguage, this.folderId});
 
   Map<String, dynamic> toMap(){
     return {

@@ -57,14 +57,12 @@ class DBHandler{
 
 
   Future<int> addNoteToFolder(Folder folder, Note note) async{
-    //TODO: Implement addNoteToFolder
     final Database db = await database;
 
     return db.rawUpdate("UPDATE $databaseNotesTableName SET folder_id = ${folder.folderId} WHERE id = ${note.noteId}");
   }
 
   Future<int> removeNoteFromFolder(Note note) async{
-    //TODO: Implement removeNoteFromFolder
     final Database db = await database;
 
     return db.rawUpdate("UPDATE $databaseNotesTableName SET folder_id = null WHERE id = ${note.noteId}");
@@ -102,7 +100,8 @@ class DBHandler{
           dateCreated: DateTime.parse(maps[i]['created']),
           dateLastEdited: DateTime.parse(maps[i]['last_edited']),
           isSaved: maps[i]['is_saved']==1 ? true : false,
-          noteLanguage: maps[i]['language']
+          noteLanguage: maps[i]['language'],
+          folderId: maps[i]['folder_id']==null ? -1 : maps[i]['folder_id']
       );
     });
   }

@@ -23,7 +23,6 @@ class FoldersState extends State<Folders>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     if (folderList.isEmpty){
       return Center(
         child: Text(

@@ -4,10 +4,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:notes/AddToFolderDialog.dart';
-import 'package:notes/DBHandler.dart';
-import 'package:notes/Note.dart';
-import 'Folder.dart';
+import 'package:notes/dialogs/AddToFolderDialog.dart';
+import 'package:notes/database/DBHandler.dart';
+import 'package:notes/classes/Note.dart';
+import '../classes/Folder.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 

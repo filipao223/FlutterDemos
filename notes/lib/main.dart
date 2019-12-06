@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notes/AddNote.dart';
+import 'package:notes/screens/AddNote.dart';
 import 'package:notes/constants.dart';
-import 'package:notes/BottomNav.dart';
+import 'package:notes/screens/BottomNav.dart';
 
 void main(){
   runApp(

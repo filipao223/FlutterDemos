@@ -1,13 +1,15 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:notes/DBHandler.dart';
-import 'package:notes/Folders.dart';
-import 'package:notes/SingleNotes.dart';
-import 'package:notes/Note.dart';
+import 'package:notes/database/DBHandler.dart';
+import 'package:notes/screens/Folders.dart';
+import 'package:notes/screens/SingleNotes.dart';
+import 'package:notes/classes/Note.dart';
 import 'package:notes/constants.dart';
 
-import 'Folder.dart';
+import '../classes/Folder.dart';
+
+//TODO: Change the name of this class, this is more like 'Home' than 'BottomNav'
 
 class BottomNavState extends State<BottomNav>{
   

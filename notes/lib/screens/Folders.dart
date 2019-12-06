@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'Folder.dart';
-import 'Note.dart';
+import '../classes/Folder.dart';
+import '../classes/Note.dart';
 
 class FoldersState extends State<Folders>{
 

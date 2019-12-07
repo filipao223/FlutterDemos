@@ -76,7 +76,8 @@ class SingleNotesState extends State<SingleNotes>{
       note: note,
       noteList: noteList,
       folderList: folderList,
-      favoriteList: favoriteList,);
+      favoriteList: favoriteList,
+      rootList: this);
   }
 }
 

@@ -8,17 +8,19 @@ import 'package:notes/controllers/Controllers.dart';
 import 'package:notes/models/Commands.dart';
 import 'package:notes/models/Folder.dart';
 import 'package:notes/models/Note.dart';
+import 'package:notes/screens/SingleNotes.dart';
 
 import 'NoteLanguage.dart';
 
 class SingleNoteCardState extends State<SingleNoteCard>{
 
-  Note note;
-  List<Note> noteList, favoriteList;
-  List<Folder> folderList;
-  Commands commands = Commands();
+  final Note note;
+  final List<Note> noteList, favoriteList;
+  final List<Folder> folderList;
+  final SingleNotesState rootList;
+  final Commands commands = Commands();
 
-  SingleNoteCardState({this.note, this.noteList, this.folderList, this.favoriteList});
+  SingleNoteCardState({this.note, this.noteList, this.folderList, this.favoriteList, this.rootList});
 
 
   @override
@@ -125,7 +127,7 @@ class SingleNoteCardState extends State<SingleNoteCard>{
 
                 onSelected: (value) async{
                   //FIXME: Maybe pass SingleNotes state to rebuild when list gets changed
-                  Controllers().popupMenuController(value, context, this);
+                  Controllers().popupMenuController(value, context, rootList);
                 },
               )
           )
@@ -138,13 +140,14 @@ class SingleNoteCardState extends State<SingleNoteCard>{
 
 class SingleNoteCard extends StatefulWidget{
 
-  Note note;
-  List<Note> noteList, favoriteList;
-  List<Folder> folderList;
+  final Note note;
+  final List<Note> noteList, favoriteList;
+  final List<Folder> folderList;
+  final SingleNotesState rootList;
 
   //final StreamController<void> streamController = StreamController<void>();
 
-  SingleNoteCard({this.note, this.noteList, this.folderList, this.favoriteList});
+  SingleNoteCard({this.note, this.noteList, this.folderList, this.favoriteList, this.rootList});
 
   SingleNoteCardState createState() =>
       SingleNoteCardState(
@@ -152,5 +155,6 @@ class SingleNoteCard extends StatefulWidget{
         noteList: noteList,
         folderList: folderList,
         favoriteList: favoriteList,
+        rootList: rootList
       );
 }

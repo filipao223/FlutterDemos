@@ -31,7 +31,7 @@ class Controllers{
   Controllers._internal();
 
   /*Controller for the popup menus in a note card*/
-  void popupMenuController(var value, BuildContext context, SingleNoteCardState originWidget) async{
+  void popupMenuController(var value, BuildContext context, var rootWidget) async{
     await dbHandler.init();
 
     if (value == commands.deleteNoteVar){
@@ -41,8 +41,8 @@ class Controllers{
       /*Remove it from the displayed list as well*/
       noteList.remove(commands.currentNote);
 
-      //FIXME: Replace with list widget
-      originWidget.setState((){});
+      //TODO: Is there a better way to do this?
+      rootWidget.setState((){});
 
       Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
     }
@@ -73,8 +73,8 @@ class Controllers{
         Fluttertoast.showToast(msg: "Added note to favorites", toastLength: Toast.LENGTH_LONG);
       }
 
-      //FIXME: This rebuild doesn't work right away, only when swiping to another screen
-      originWidget.setState((){});
+      //TODO: Is there a better way to do this?
+      rootWidget.setState((){});
     }
   }
 

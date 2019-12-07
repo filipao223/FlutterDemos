@@ -3,8 +3,8 @@
 import 'package:notes/constants.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:notes/classes/Note.dart';
-import 'package:notes/classes/Folder.dart';
+import 'package:notes/models/Note.dart';
+import 'package:notes/models/Folder.dart';
 
 class DBHandler{
   Future<Database> database;

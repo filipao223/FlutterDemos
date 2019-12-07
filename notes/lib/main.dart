@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/screens/AddNote.dart';
 import 'package:notes/constants.dart';
-import 'package:notes/screens/BottomNav.dart';
+import 'package:notes/screens/MainScreen.dart';
 
 void main(){
   runApp(
@@ -17,7 +17,7 @@ void main(){
           //onGenerateRoute: Router.generateRoute,
           initialRoute: homeRoute,
           routes: {
-            homeRoute : (context) => BottomNav(),
+            homeRoute : (context) => MainScreen(),
             addNoteRoute : (context) => AddNote(),
           },
 

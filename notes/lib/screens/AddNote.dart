@@ -7,7 +7,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/database/DBHandler.dart';
 
-import '../classes/Note.dart';
+import '../models/Note.dart';
 import '../constants.dart';
 
 class AddNoteState extends State<AddNote>{
@@ -21,6 +21,7 @@ class AddNoteState extends State<AddNote>{
   }
 
   //TODO: Prevent 'this field is required' message from showing up when first clicking on a field
+  //FIXME: No language chosen results in an empty box
   void onSavePressed() async{
 
     if (formBuildKey.currentState.saveAndValidate()){

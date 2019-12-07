@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:notes/database/DBHandler.dart';
 import 'package:notes/screens/Folders.dart';
 import 'package:notes/screens/SingleNotes.dart';
-import 'package:notes/classes/Note.dart';
+import 'package:notes/models/Note.dart';
 import 'package:notes/constants.dart';
 
-import '../classes/Folder.dart';
+import '../models/Folder.dart';
 
-//TODO: Change the name of this class, this is more like 'Home' than 'BottomNav'
 
-class BottomNavState extends State<BottomNav>{
+class MainScreenState extends State<MainScreen>{
   
   List<Note> noteList, favoriteList;
   List<Folder> folderList;
@@ -105,13 +104,16 @@ class BottomNavState extends State<BottomNav>{
         onTap: onItemTapped,
       ),
 
+      //FIXME: FAB overlaps last item
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async{
           /*Open the AddNote page where a new note can be created, and add it to the list if created*/
           var result = await Navigator.pushNamed(context, addNoteRoute);
           if (result != null && result is Note) setState(() {
-            noteList.insert(0, result);
+            //FIXME: Insertion at position 0 results in the list languages boxes displaying wrong text
+            //noteList.insert(0, result);
+            noteList.add(result);
           });
   },
       ),
@@ -177,10 +179,10 @@ class BottomNavState extends State<BottomNav>{
 
 
 
-class BottomNav extends StatefulWidget{
+class MainScreen extends StatefulWidget{
 
-  BottomNavState createState(){
-    BottomNavState homeState = new BottomNavState();
+  MainScreenState createState(){
+    MainScreenState homeState = new MainScreenState();
     //homeState.createPlaceholderNotes();
     return homeState;
   }

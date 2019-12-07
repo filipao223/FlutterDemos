@@ -6,8 +6,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:notes/dialogs/AddToFolderDialog.dart';
 import 'package:notes/database/DBHandler.dart';
-import 'package:notes/classes/Note.dart';
-import '../classes/Folder.dart';
+import 'package:notes/models/Note.dart';
+import 'package:notes/widgets/NoteLanguage.dart';
+import '../models/Folder.dart';
 
 class SingleNotesState extends State<SingleNotes>{
 
@@ -52,7 +53,6 @@ class SingleNotesState extends State<SingleNotes>{
     }
 
     else{
-      //TODO: Favorite the note
       dbHandler.changeNoteFavoriteStatus(commands.currentNote);
 
       setState(() {
@@ -169,27 +169,8 @@ class SingleNotesState extends State<SingleNotes>{
             ),
           ),
 
-          //TODO: Maybe change the layout of the language text
-          Container(
-            width: 70,
-            child: Padding(
-              padding: EdgeInsets.all(7.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: AutoSizeText(
-                    "${note.noteLanguage.contains("none") ? "Txt" : note.noteLanguage}",
-                  maxLines: 1,
-                  minFontSize: 10.0,
-                ),
-              ),
-            ),
-
-            decoration: BoxDecoration(
-              color: Colors.black12,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.elliptical(60, 50)),
-            ),
-          ),
+          /*Displays the note language in a rounded box*/
+          NoteLanguage(note: note),
 
           Padding(
               padding: EdgeInsets.only(right: 8.0),

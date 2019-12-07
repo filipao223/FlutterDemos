@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/database/DBHandler.dart';
 
-import '../classes/Folder.dart';
-import '../classes/Note.dart';
+import '../models/Folder.dart';
+import '../models/Note.dart';
 import '../constants.dart';
 
 class AddToFolderDialogState extends State<AddToFolderDialog>{

@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:notes/controllers/Controllers.dart';
 import 'package:notes/database/DBHandler.dart';
 import 'package:notes/screens/Folders.dart';
 import 'package:notes/screens/SingleNotes.dart';
@@ -18,6 +19,7 @@ class MainScreenState extends State<MainScreen>{
   PageController _pageController = PageController();
   DBHandler dbHandler = DBHandler();
   bool checkedDatabase = false;
+  Controllers controllers = Controllers();
 
 
 
@@ -41,6 +43,11 @@ class MainScreenState extends State<MainScreen>{
     if (folderList == null) folderList = List<Folder>();
     if (favoriteList == null) favoriteList = List<Note>();
 
+    /*Also update the lists in Controller*/
+    controllers.noteList = noteList;
+    controllers.favoriteList = favoriteList;
+    controllers.folderList = folderList;
+
     List<Note> retrievedNotes = await dbHandler.retrieveNotes();
     List<Folder> retrievedFolders = await dbHandler.retrieveFolders();
 
@@ -51,7 +58,10 @@ class MainScreenState extends State<MainScreen>{
 
     /*Check which notes are saved and if they belong to a folder*/
     noteList.forEach((note){
-      if (note.isSaved) favoriteList.add(note);
+      if (note.isSaved){
+        print("${note.noteTitle} is saved");
+        favoriteList.add(note);
+      }
       if (note.folderId != -1){
         Folder folder = folderList.firstWhere((folder) => folder.folderId == note.folderId, orElse: () => null);
         if (folder != null){
@@ -104,7 +114,7 @@ class MainScreenState extends State<MainScreen>{
         onTap: onItemTapped,
       ),
 
-      //FIXME: FAB overlaps last item
+      //FIXME: Insertion problem has returned, wrong widgets when inserting at first index
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () async{

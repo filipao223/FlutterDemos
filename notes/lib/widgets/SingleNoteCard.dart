@@ -21,20 +21,6 @@ class SingleNoteCardState extends State<SingleNoteCard>{
   SingleNoteCardState({this.note, this.noteList, this.folderList, this.favoriteList});
 
 
-  void triggerRebuild(){
-    setState(() {
-      print("REBUILT");
-    });
-  }
-
-
-  @override
-  void dispose() {
-    //widget.streamController.close();
-    super.dispose();
-  }
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -137,7 +123,8 @@ class SingleNoteCardState extends State<SingleNoteCard>{
                   return list;
                 },
 
-                onSelected: (value){
+                onSelected: (value) async{
+                  //FIXME: Maybe pass SingleNotes state to rebuild when list gets changed
                   Controllers().popupMenuController(value, context, this);
                 },
               )

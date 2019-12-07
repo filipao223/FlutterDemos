@@ -35,19 +35,20 @@ class Controllers{
     await dbHandler.init();
 
     if (value == commands.deleteNoteVar){
-      //Delete note
+      /*Remove the note form the database*/
       dbHandler.removeNote(commands.currentNote);
 
+      /*Remove it from the displayed list as well*/
       noteList.remove(commands.currentNote);
 
-      //TODO: Not very readable, change this way of triggering a state rebuild
+      //FIXME: Replace with list widget
       originWidget.setState((){});
 
       Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
     }
 
     else if (value == commands.addNoteToFolderVar){
-      //Add note to a folder
+      /*Show a dialog that allows the user to choose which folder to add to (or create a new one)*/
       showDialog(
           context: context,
           builder: (context){
@@ -58,7 +59,10 @@ class Controllers{
 
     else{
 
+      /*Change the isSaved property of the note and update its database entry*/
       dbHandler.changeNoteFavoriteStatus(commands.currentNote);
+
+      commands.currentNote.isSaved = !commands.currentNote.isSaved;
 
       if (favoriteList.contains(commands.currentNote)){
         favoriteList.remove(commands.currentNote);

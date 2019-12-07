@@ -58,10 +58,7 @@ class MainScreenState extends State<MainScreen>{
 
     /*Check which notes are saved and if they belong to a folder*/
     noteList.forEach((note){
-      if (note.isSaved){
-        print("${note.noteTitle} is saved");
-        favoriteList.add(note);
-      }
+      if (note.isSaved) favoriteList.add(note);
       if (note.folderId != -1){
         Folder folder = folderList.firstWhere((folder) => folder.folderId == note.folderId, orElse: () => null);
         if (folder != null){

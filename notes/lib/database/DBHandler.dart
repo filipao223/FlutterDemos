@@ -152,13 +152,12 @@ class DBHandler{
   }
 
 
-  void changeNoteFavoriteStatus(Note note) async{
+  Future<int> changeNoteFavoriteStatus(Note note) async{
     final Database db = await database;
 
-    print("${note.toString()}");
+    note.isSaved = !note.isSaved;
 
-    var result = await db.update(databaseNotesTableName, note.toMap(), where: "id = ?", whereArgs: [note.noteId]);
-    print("$result");
+    return db.update(databaseNotesTableName, note.toMap(), where: "id = ?", whereArgs: [note.noteId]);
   }
 
 }

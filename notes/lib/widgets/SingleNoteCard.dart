@@ -21,25 +21,16 @@ class SingleNoteCardState extends State<SingleNoteCard>{
   SingleNoteCardState({this.note, this.noteList, this.folderList, this.favoriteList});
 
 
-  @override
-  void initState() {
-    widget.streamController.stream.listen((_){
-      triggerRebuild();
-    });
-    super.initState();
-  }
-
-
   void triggerRebuild(){
     setState(() {
-
+      print("REBUILT");
     });
   }
 
 
   @override
   void dispose() {
-    widget.streamController.close();
+    //widget.streamController.close();
     super.dispose();
   }
 
@@ -147,7 +138,7 @@ class SingleNoteCardState extends State<SingleNoteCard>{
                 },
 
                 onSelected: (value){
-                  Controllers().popupMenuController(value, context, noteList, this, widget.streamController);
+                  Controllers().popupMenuController(value, context, this);
                 },
               )
           )
@@ -164,7 +155,7 @@ class SingleNoteCard extends StatefulWidget{
   List<Note> noteList, favoriteList;
   List<Folder> folderList;
 
-  final StreamController<void> streamController = StreamController<void>();
+  //final StreamController<void> streamController = StreamController<void>();
 
   SingleNoteCard({this.note, this.noteList, this.folderList, this.favoriteList});
 

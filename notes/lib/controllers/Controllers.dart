@@ -31,7 +31,7 @@ class Controllers{
   Controllers._internal();
 
   /*Controller for the popup menus in a note card*/
-  void popupMenuController(var value, BuildContext context, List<Note> noteList, SingleNoteCardState originWidget, StreamController<void> stream) async{
+  void popupMenuController(var value, BuildContext context, SingleNoteCardState originWidget) async{
     await dbHandler.init();
 
     if (value == commands.deleteNoteVar){
@@ -41,7 +41,7 @@ class Controllers{
       noteList.remove(commands.currentNote);
 
       //TODO: Not very readable, change this way of triggering a state rebuild
-      stream.add(1);
+      originWidget.setState((){});
 
       Fluttertoast.showToast(msg: "Deleted note", toastLength: Toast.LENGTH_LONG);
     }
@@ -69,9 +69,8 @@ class Controllers{
         Fluttertoast.showToast(msg: "Added note to favorites", toastLength: Toast.LENGTH_LONG);
       }
 
-      print("HERE");
-      //TODO: Not very readable, change this way of triggering a state rebuild
-      stream.add(1);
+      //FIXME: This rebuild doesn't work right away, only when swiping to another screen
+      originWidget.setState((){});
     }
   }
 

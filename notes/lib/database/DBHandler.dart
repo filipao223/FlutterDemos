@@ -142,6 +142,8 @@ class DBHandler{
   Future<int> changeNoteFavoriteStatus(Note note) async{
     final Database db = await database;
 
+    note.isSaved = !note.isSaved;
+
     return db.update(databaseNotesTableName, note.toMap(), where: "id = ?", whereArgs: [note.noteId]);
   }
 

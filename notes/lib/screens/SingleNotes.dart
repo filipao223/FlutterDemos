@@ -101,6 +101,7 @@ class SingleNotesState extends State<SingleNotes>{
 
     else{
       return ListView.builder(
+        padding: const EdgeInsets.only(bottom: kFloatingActionButtonMargin + 48),
         itemCount: noteList.length,
         itemBuilder: (context, i){
           return buildItem(noteList[i]);
@@ -115,6 +116,8 @@ class SingleNotesState extends State<SingleNotes>{
   Widget buildItem(Note note){
 
     return Card(
+      key: Key(note.noteId.toString()),
+
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -157,7 +160,7 @@ class SingleNotesState extends State<SingleNotes>{
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "${DateFormat('yyyy-MM-dd hh:mm').format(note.dateCreated)}",
+                      "${DateFormat('yyyy-MM-dd HH:mm').format(note.dateCreated)}",
                       style: TextStyle(
                           color: Colors.grey,
                           fontSize: 9

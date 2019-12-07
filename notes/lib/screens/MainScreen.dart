@@ -110,12 +110,12 @@ class MainScreenState extends State<MainScreen>{
         onPressed: () async{
           /*Open the AddNote page where a new note can be created, and add it to the list if created*/
           var result = await Navigator.pushNamed(context, addNoteRoute);
-          if (result != null && result is Note) setState(() {
-            //FIXME: Insertion at position 0 results in the list languages boxes displaying wrong text
-            //noteList.insert(0, result);
-            noteList.add(result);
-          });
-  },
+          if (result != null && result is Note){
+            setState(() {
+              noteList.insert(0, result);
+            });
+          }
+        },
       ),
     );
   }

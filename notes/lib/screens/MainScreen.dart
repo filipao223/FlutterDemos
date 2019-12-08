@@ -111,7 +111,7 @@ class MainScreenState extends State<MainScreen>{
         onTap: onItemTapped,
       ),
 
-      //FIXME: Insertion problem has returned, wrong widgets when inserting at first index
+      
       floatingActionButton: FloatingActionButton(
         key: MainScreen.addNoteFabKey,
         child: Icon(Icons.add),

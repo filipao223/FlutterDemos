@@ -147,7 +147,8 @@ class SingleNoteCard extends StatefulWidget{
 
   //final StreamController<void> streamController = StreamController<void>();
 
-  SingleNoteCard({this.note, this.noteList, this.folderList, this.favoriteList, this.rootList});
+  SingleNoteCard({this.note, this.noteList, this.folderList, this.favoriteList, this.rootList, Key key})
+      : super(key: key);
 
   SingleNoteCardState createState() =>
       SingleNoteCardState(

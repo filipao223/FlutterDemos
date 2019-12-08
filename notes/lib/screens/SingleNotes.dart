@@ -73,6 +73,7 @@ class SingleNotesState extends State<SingleNotes>{
   Widget buildItem(Note note){
 
     return SingleNoteCard(
+      key: Key(note.noteId.toString()),
       note: note,
       noteList: noteList,
       folderList: folderList,

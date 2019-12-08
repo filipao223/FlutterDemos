@@ -6,11 +6,22 @@ import 'package:sqflite/sqflite.dart';
 import 'package:notes/models/Note.dart';
 import 'package:notes/models/Folder.dart';
 
+/*Singleton*/
 class DBHandler{
   Future<Database> database;
   int currentNoteId, currentFolderId;
+  bool alreadyInit = false;
+
+  static final DBHandler instance = DBHandler._internal();
+
+  factory DBHandler(){
+    return instance;
+  }
+
+  DBHandler._internal();
 
   init() async{
+    if (alreadyInit) return;
     /*Create database path (for iOS and Android)*/
     final path = join(await getDatabasesPath(), databaseName);
 
@@ -25,6 +36,8 @@ class DBHandler{
       },
       version: 1,
     );
+
+    alreadyInit = true;
   }
 
 

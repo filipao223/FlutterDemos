@@ -41,6 +41,10 @@ dependencies:
   settings_ui: ^0.1.1
 
 dev_dependencies:
+  #Mock library for Dart inspired by Mockito.
+  mockito: ^4.1.1
+
+  #Test library
   flutter_test:
     sdk: flutter
 

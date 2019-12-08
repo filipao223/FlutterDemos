@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:notes/controllers/Controllers.dart';
 import 'package:notes/database/DBHandler.dart';
 import 'package:notes/screens/Folders.dart';
 import 'package:notes/screens/SingleNotes.dart';
@@ -15,14 +16,15 @@ class MainScreenState extends State<MainScreen>{
   List<Note> noteList, favoriteList;
   List<Folder> folderList;
   int selectedBottomNavItem = 0;
-  PageController _pageController = PageController();
+  PageController pageController = PageController();
   DBHandler dbHandler = DBHandler();
   bool checkedDatabase = false;
+  Controllers controllers = Controllers();
 
 
 
   void onItemTapped(int index){
-    _pageController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    pageController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
 
@@ -40,6 +42,11 @@ class MainScreenState extends State<MainScreen>{
     if (noteList == null) noteList = List<Note>();
     if (folderList == null) folderList = List<Folder>();
     if (favoriteList == null) favoriteList = List<Note>();
+
+    /*Also update the lists in Controller*/
+    controllers.noteList = noteList;
+    controllers.favoriteList = favoriteList;
+    controllers.folderList = folderList;
 
     List<Note> retrievedNotes = await dbHandler.retrieveNotes();
     List<Folder> retrievedFolders = await dbHandler.retrieveFolders();
@@ -104,8 +111,9 @@ class MainScreenState extends State<MainScreen>{
         onTap: onItemTapped,
       ),
 
-      //FIXME: FAB overlaps last item
+
       floatingActionButton: FloatingActionButton(
+        key: MainScreen.addNoteFabKey,
         child: Icon(Icons.add),
         onPressed: () async{
           /*Open the AddNote page where a new note can be created, and add it to the list if created*/
@@ -125,11 +133,11 @@ class MainScreenState extends State<MainScreen>{
 
     if (checkedDatabase){
       return PageView(
-        controller: _pageController,
+        controller: pageController,
         children: <Widget>[
 
           SingleNotes(noteList, folderList, favoriteList),
-          Folders(folderList),
+          Folders(folderList, favoriteList),
           SingleNotes(favoriteList, folderList, favoriteList)
 
         ],
@@ -142,7 +150,7 @@ class MainScreenState extends State<MainScreen>{
       getNotesFromDatabase();
 
       return PageView(
-        controller: _pageController,
+        controller: pageController,
         children: <Widget>[
 
           Row(mainAxisAlignment: MainAxisAlignment.center,
@@ -180,6 +188,8 @@ class MainScreenState extends State<MainScreen>{
 
 
 class MainScreen extends StatefulWidget{
+
+  static const addNoteFabKey = Key("addNoteFabKey");
 
   MainScreenState createState(){
     MainScreenState homeState = new MainScreenState();

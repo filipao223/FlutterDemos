@@ -1,16 +1,19 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:notes/widgets/SingleNoteCard.dart';
 import '../models/Folder.dart';
 import '../models/Note.dart';
 
+//TODO: Problems when deleting a note from this view, not refreshed anywhere
+
 class FoldersState extends State<Folders>{
 
-  List<Note> noteList;
+  List<Note> noteList, favoriteList;
   List<Folder> folderList;
 
 
-  FoldersState(List<Folder> list){this.folderList = list;}
+  FoldersState(List<Folder> list, List<Note> listFavorite){this.folderList = list; this.favoriteList = listFavorite;}
 
 
   void addPlaceholderFolders(){
@@ -97,7 +100,15 @@ class FoldersState extends State<Folders>{
   }
 
   Widget buildItem(Note note){
-    return Card(
+    return SingleNoteCard(
+      key: Key(note.noteId.toString()),
+      note: note,
+      noteList: noteList,
+      folderList: folderList,
+      favoriteList: favoriteList,
+      rootList: this
+    );
+    /*return Card(
       child: Padding(
         padding: EdgeInsets.all(3.0),
         child: ListTile(
@@ -112,7 +123,7 @@ class FoldersState extends State<Folders>{
           ),
         ),
       ),
-    );
+    );*/
   }
 }
 
@@ -121,11 +132,12 @@ class FoldersState extends State<Folders>{
 class Folders extends StatefulWidget{
 
   List<Folder> folderList;
+  List<Note> favoriteList;
 
-  Folders(List<Folder> list){this.folderList = list;}
+  Folders(List<Folder> list, List<Note> listFavorite){this.folderList = list; this.favoriteList = listFavorite;}
 
   FoldersState createState(){
-    FoldersState foldersState = FoldersState(folderList);
+    FoldersState foldersState = FoldersState(folderList, favoriteList);
     /*Run these two at same time*/
     //foldersState.addPlaceholderFolders();
     //foldersState.folderList[0].createPlaceholderNotes();

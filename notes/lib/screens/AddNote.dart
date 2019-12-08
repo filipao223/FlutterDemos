@@ -12,12 +12,12 @@ import '../constants.dart';
 
 class AddNoteState extends State<AddNote>{
 
-  DBHandler dbHandler;
+  DBHandler dbHandler = DBHandler();
   final GlobalKey<FormBuilderState> formBuildKey = GlobalKey<FormBuilderState>();
 
 
   void initDBHandler(){
-    this.dbHandler = DBHandler();
+    if (dbHandler == null) this.dbHandler = DBHandler();
   }
 
   //TODO: Prevent 'this field is required' message from showing up when first clicking on a field

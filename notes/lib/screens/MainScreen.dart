@@ -16,7 +16,7 @@ class MainScreenState extends State<MainScreen>{
   List<Note> noteList, favoriteList;
   List<Folder> folderList;
   int selectedBottomNavItem = 0;
-  PageController _pageController = PageController();
+  PageController pageController = PageController();
   DBHandler dbHandler = DBHandler();
   bool checkedDatabase = false;
   Controllers controllers = Controllers();
@@ -24,7 +24,7 @@ class MainScreenState extends State<MainScreen>{
 
 
   void onItemTapped(int index){
-    _pageController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    pageController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
 
@@ -113,6 +113,7 @@ class MainScreenState extends State<MainScreen>{
 
       //FIXME: Insertion problem has returned, wrong widgets when inserting at first index
       floatingActionButton: FloatingActionButton(
+        key: MainScreen.addNoteFabKey,
         child: Icon(Icons.add),
         onPressed: () async{
           /*Open the AddNote page where a new note can be created, and add it to the list if created*/
@@ -132,7 +133,7 @@ class MainScreenState extends State<MainScreen>{
 
     if (checkedDatabase){
       return PageView(
-        controller: _pageController,
+        controller: pageController,
         children: <Widget>[
 
           SingleNotes(noteList, folderList, favoriteList),
@@ -149,7 +150,7 @@ class MainScreenState extends State<MainScreen>{
       getNotesFromDatabase();
 
       return PageView(
-        controller: _pageController,
+        controller: pageController,
         children: <Widget>[
 
           Row(mainAxisAlignment: MainAxisAlignment.center,
@@ -187,6 +188,8 @@ class MainScreenState extends State<MainScreen>{
 
 
 class MainScreen extends StatefulWidget{
+
+  static const addNoteFabKey = Key("addNoteFabKey");
 
   MainScreenState createState(){
     MainScreenState homeState = new MainScreenState();

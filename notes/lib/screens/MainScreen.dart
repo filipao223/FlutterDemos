@@ -111,7 +111,7 @@ class MainScreenState extends State<MainScreen>{
         onTap: onItemTapped,
       ),
 
-      
+
       floatingActionButton: FloatingActionButton(
         key: MainScreen.addNoteFabKey,
         child: Icon(Icons.add),
@@ -137,7 +137,7 @@ class MainScreenState extends State<MainScreen>{
         children: <Widget>[
 
           SingleNotes(noteList, folderList, favoriteList),
-          Folders(folderList),
+          Folders(folderList, favoriteList),
           SingleNotes(favoriteList, folderList, favoriteList)
 
         ],

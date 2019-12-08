@@ -17,7 +17,7 @@ class SingleNoteCardState extends State<SingleNoteCard>{
   final Note note;
   final List<Note> noteList, favoriteList;
   final List<Folder> folderList;
-  final SingleNotesState rootList;
+  final rootList;
   final Commands commands = Commands();
 
   SingleNoteCardState({this.note, this.noteList, this.folderList, this.favoriteList, this.rootList});
@@ -143,7 +143,7 @@ class SingleNoteCard extends StatefulWidget{
   final Note note;
   final List<Note> noteList, favoriteList;
   final List<Folder> folderList;
-  final SingleNotesState rootList;
+  final rootList;
 
   //final StreamController<void> streamController = StreamController<void>();
 

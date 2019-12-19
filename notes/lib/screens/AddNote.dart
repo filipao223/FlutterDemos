@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notes/database/DBHandler.dart';
+import 'package:notes/widgets/FormTextFieldDecoration.dart';
 
 import '../models/Note.dart';
 import '../constants.dart';
@@ -51,7 +52,7 @@ class AddNoteState extends State<AddNote>{
   Widget build(BuildContext context) {
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomPadding: true,
 
       appBar: AppBar(
         title: Text("Add new note"),
@@ -67,56 +68,73 @@ class AddNoteState extends State<AddNote>{
 
 
   Widget buildForm(){
-    return Column(
+    return ListView(
+      shrinkWrap: true,
+      padding: EdgeInsets.only(bottom: 6.0),
       children: <Widget>[
         FormBuilder(
           key: formBuildKey,
           autovalidate: true,
           child: Column(
             children: <Widget>[
-              FormBuilderTextField(
-                attribute: "title",
-                decoration: InputDecoration(labelText: "Title"),
-                validators: [
-                  FormBuilderValidators.maxLength(30, errorText: "Title is too long"),
-                  FormBuilderValidators.required(errorText: "This field is required")
-                ],
+              Padding(
+                padding: EdgeInsets.all(3.0),
+                child: FormBuilderTextField(
+                  attribute: "title",
+                  decoration: FormTextFieldDecoration().decoration(labelText: "Title"),
+                  validators: [
+                    FormBuilderValidators.maxLength(30, errorText: "Title is too long"),
+                    FormBuilderValidators.required(errorText: "This field is required")
+                  ],
+                ),
               ),
 
-              FormBuilderTextField(
-                attribute: "description",
-                decoration: InputDecoration(labelText: "Description"),
-                validators: [
-                  FormBuilderValidators.maxLength(120, errorText: "Description is too long"),
-                  FormBuilderValidators.required(errorText: "This field is required")
-                ],
+              Padding(
+                padding: EdgeInsets.all(3.0),
+                child: FormBuilderTextField(
+                  attribute: "description",
+                  decoration: FormTextFieldDecoration().decoration(labelText: "Description"),
+                  validators: [
+                    FormBuilderValidators.maxLength(120, errorText: "Description is too long"),
+                    FormBuilderValidators.required(errorText: "This field is required")
+                  ],
+                ),
               ),
 
-              FormBuilderTextField(
-                attribute: "content",
-                decoration: InputDecoration(labelText: "Content"),
-                validators: [
-                  FormBuilderValidators.required(errorText: "This field is required")
-                ],
+              Padding(
+                padding: EdgeInsets.all(3.0),
+                child: FormBuilderTextField(
+                  attribute: "content",
+                  decoration: FormTextFieldDecoration().decoration(labelText: "Content"),
+                  validators: [
+                    FormBuilderValidators.required(errorText: "This field is required")
+                  ],
+                  minLines: 6,
+                ),
               ),
 
-              FormBuilderTypeAhead(
-                attribute: "language",
-                decoration: InputDecoration(labelText: "Language"),
-                itemBuilder: (context, suggestion){
-                  return ListTile(
-                    title: Text("$suggestion"),
-                  );
-                },
-                suggestionsCallback: (pattern){
-                  List<String> genList = List<String>();
+              //FIXME: Suggestions appear below keyboard
+              Padding(
+                padding: EdgeInsets.only(top: 3.0, left: 3.0, right: 3.0),
+                child: FormBuilderTypeAhead(
+                  attribute: "language",
+                  decoration: FormTextFieldDecoration().decoration(labelText: "Language"),
+                  itemBuilder: (context, suggestion){
+                    return ListTile(
+                      title: Text("$suggestion"),
+                    );
+                  },
+                  suggestionsCallback: (pattern){
+                    print("Called suggestion $pattern");
+                    List<String> genList = List<String>();
 
-                  languages.forEach((language){
-                    if (language.toLowerCase().contains(pattern.toLowerCase())) genList.add(language);
-                  });
+                    languages.forEach((language){
+                      if (language.toLowerCase().contains(pattern.toLowerCase())) genList.add(language);
+                    });
 
-                  return genList;
-                },
+                    return genList;
+                  },
+                ),
               ),
 
             ],
